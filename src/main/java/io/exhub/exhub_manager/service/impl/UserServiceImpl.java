@@ -5,6 +5,9 @@ import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
 import io.exhub.exhub_manager.pojo.DO.LoginRecordDOExample;
 import io.exhub.exhub_manager.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
  * @data 2018/7/25
  */
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Autowired
     private LoginRecordDOMapper loginRecordMapper;
@@ -32,5 +35,10 @@ public class UserServiceImpl implements IUserService {
         LoginRecordDOExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(userId);
         return loginRecordMapper.selectByExample(example);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        return null;
     }
 }
