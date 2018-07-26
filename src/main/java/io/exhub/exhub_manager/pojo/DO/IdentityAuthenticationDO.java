@@ -4,6 +4,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+/**
+ * 身份认证
+ * @date 2018/7/26
+ * @author
+ */
 public class IdentityAuthenticationDO {
 
     /**

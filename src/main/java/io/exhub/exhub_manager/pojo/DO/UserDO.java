@@ -4,6 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.Date;
 
+/**
+ * 交易中心用户
+ * @date 2018/7/26
+ * @author
+ */
 public class UserDO {
     /**
      *

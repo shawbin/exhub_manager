@@ -33,6 +33,7 @@ public class SessionValidateFilter extends GenericFilterBean {
      * 对外放开
      */
     private static final String LOGIN = "/login";
+    private static final String MANAGER_LOGIN = "/manager/user/login";
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -51,7 +52,7 @@ public class SessionValidateFilter extends GenericFilterBean {
 
         logger.debug("请求的uri为：" + uri);
         //不验证
-        if (uri.startsWith(LOGIN)) {
+        if (uri.startsWith(LOGIN) || uri.startsWith(MANAGER_LOGIN)) {
 
         } else {
             boolean verifyFlag = verify(request, response);
