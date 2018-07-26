@@ -29,7 +29,7 @@ public class UserControllerTest {
     @Test
     public void getLoginRecord() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/content/1022/login/record?pageNum=1&pageSize=10"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/manager/user/1022/login/record?pageNum=1&pageSize=10"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn();
