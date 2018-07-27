@@ -14,7 +14,6 @@ public enum ResponseCode {
     NOT_OPEN_GOOGLE_VERIFY(207, "not open google verify"),
     OPEN_GOOGLE_VERIFY(208, "open google verify"),
 
-    TOKEN_NOT_EXIST(401, "token not exist"),
     GOOGLE_FAILURE(418, "google verify failed"),
     GEETEST_FAILURE(419, "geetest failed"),
     REQUEST_PARAMS_TAMPER(421, "the request parameter were tampered"),
@@ -25,7 +24,7 @@ public enum ResponseCode {
     ACCOUNT_NOT_EXIST(426, "account not exist"),
     SEND_EMAIL_FAILURE(427, "send email failed"),
     ACCOUNT_FROZEN(428, "account frozen"),
-    TOKEN_VERIFY_FAILURE(429, "token verify failed"),
+    SESSION_VERIFY_FAILURE(429, "session verify failed"),
     UPLOAD_FILE_FAILURE(430, "upload file failed"),
     NO_DATA(431, "no data"),
 

@@ -1,5 +1,5 @@
 server:
-  port: 81
+  port: 80
 
 spring:
     datasource:
@@ -34,7 +34,7 @@ mybatis:
       map-underscore-to-camel-case: true
 
 exhubConfig:
-  index: index
+  managerSession: managerUser
 
 logging:
   level:

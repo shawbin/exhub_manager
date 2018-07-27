@@ -4,6 +4,7 @@ import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -16,9 +17,10 @@ public interface IUserService {
      * manager登录
      * @param username
      * @param password
+     * @param session
      * @return
      */
-    ServerResponse postLogin(String username, String password);
+    ServerResponse postLogin(String username, String password, HttpSession session);
 
     /**
      * 通过用户名查找用户
@@ -50,6 +52,6 @@ public interface IUserService {
      * @return
      * @param //userId
      */
-    /*List<LoginRecordDO> getLoginRecord(Long userId);*/
+    List<LoginRecordDO> getLoginRecord(Long userId);
 
 }

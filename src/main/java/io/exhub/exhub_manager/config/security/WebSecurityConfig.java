@@ -1,7 +1,6 @@
 package io.exhub.exhub_manager.config.security;
 
 import io.exhub.exhub_manager.config.filter.SessionValidateFilter;
-import io.exhub.exhub_manager.config.handler.MyLogoutSuccessHandler;
 import io.exhub.exhub_manager.service.impl.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 /**
  * 安全验证
@@ -49,27 +47,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          * 对密码采用 BCryptPasswordEncoder 加密方式
          */
         auth.userDetailsService(userService()).passwordEncoder(getPasswordEncoder());
-        //auth.authenticationProvider()
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
+        //不对静态资源拦截
+        web.ignoring().antMatchers("/static/**");
     }
-
-    @Bean
-    public LogoutSuccessHandler getLogoutHandler() {
-        return new MyLogoutSuccessHandler();
-    }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-
-        http.authorizeRequests().anyRequest().permitAll()
-                .and()
-                .csrf().disable();
+        //允许所有用户访问"/login"和"/backstage/user/**"
+        http.authorizeRequests()
+                .antMatchers("/login", "/backstage/user/**").permitAll()
+                //其他地址的访问均需验证权限
+                .anyRequest().authenticated();
         http.addFilterBefore(new SessionValidateFilter(), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement()
                 //session创建策略
@@ -79,6 +72,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //防止篡改session
                 .sessionFixation().migrateSession();
-
     }
 }

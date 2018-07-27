@@ -1,6 +1,5 @@
 package io.exhub.exhub_manager.service.impl;
 
-import com.google.common.collect.ImmutableMap;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.mapper.LoginRecordDOMapper;
@@ -11,15 +10,16 @@ import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDOExample;
 import io.exhub.exhub_manager.service.IUserService;
 import io.exhub.exhub_manager.util.EncryptUtil;
-import io.exhub.exhub_manager.util.TokenFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author
@@ -33,14 +33,18 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Autowired
     private ManagerUserDOMapper managerUserMapper;
 
+    @Value("${exhubConfig.managerSession}")
+    private String managerSession;
+
     /**
      * manager登录
      * @param username
      * @param password
+     * @param session
      * @return
      */
     @Override
-    public ServerResponse postLogin(String username, String password) {
+    public ServerResponse postLogin(String username, String password, HttpSession session) {
 
         //判断邮箱密码是否正确
         ManagerUserDO managerUser = getManagerUserByUsername(username);
@@ -50,10 +54,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         if (!EncryptUtil.matches(password, managerUser.getPassword())) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.PASSWORD_ERROR.getCode(), ResponseCode.PASSWORD_ERROR.getDesc());
         }
-        //返回 id username JWT_token
-        Map<String, Object> data = ImmutableMap.of("userId", managerUser.getId(),
-                "username", managerUser.getUsername(),
-                "token", "");
+        //将managerUser放入session
+        session.setAttribute(managerSession, managerUser);
+        //设置session过期时间是30min
+        session.setMaxInactiveInterval(30 * 60);
         return ServerResponse.createBySuccess();
     }
 
@@ -114,7 +118,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
      * @return
      * @param //userId
      */
-    /*@Override
+    @Override
     public List<LoginRecordDO> getLoginRecord(Long userId) {
 
         LoginRecordDOExample example = new LoginRecordDOExample();
@@ -122,7 +126,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         LoginRecordDOExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(userId);
         return loginRecordMapper.selectByExample(example);
-    }*/
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {

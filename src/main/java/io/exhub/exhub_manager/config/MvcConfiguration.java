@@ -1,5 +1,6 @@
 package io.exhub.exhub_manager.config;
 
+import io.exhub.exhub_manager.config.filter.SessionValidateFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +51,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
 		registry.viewResolver(getViewResolver());
 	}
+
 	@Override
 	public void configurePathMatch(PathMatchConfigurer configurer) {
 		configurer.setUseRegisteredSuffixPatternMatch(false);
@@ -58,11 +60,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 
-		//registry.addViewController("/error").setViewName("");
-		//registry.addViewController("/index").setViewName("index");
-		//registry.addViewController("/login").setViewName("login");
+		registry.addViewController("/login").setViewName("login");
 
 	}
-
-
 }

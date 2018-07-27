@@ -3,37 +3,35 @@ package io.exhub.exhub_manager.config.filter;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.util.JsonUtils;
-import io.exhub.exhub_manager.util.TokenFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * 校验session是否过期
+ *
  * @author
  * @Modified By: 参考原项目
- * 跨域问题解决
  */
 @Component
-public class SessionValidateFilter extends GenericFilterBean {
+public class SessionValidateFilter extends DelegatingFilterProxy implements Filter{
+
     private static final Logger logger = LoggerFactory.getLogger(SessionValidateFilter.class);
 
-    /**
-     * 对外放开
-     */
     private static final String LOGIN = "/login";
-    private static final String MANAGER_LOGIN = "/manager/user/login";
+    private static final String ERROR = "/error";
+
+    @Value("${exhubConfig.managerSession}")
+    private String managerSession;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -49,46 +47,26 @@ public class SessionValidateFilter extends GenericFilterBean {
         response.setHeader("XDomainRequestAllowed", "1");
         response.setCharacterEncoding("UTF-8");
         String uri = request.getRequestURI();
-
         logger.debug("请求的uri为：" + uri);
-        //不验证
-        if (uri.startsWith(LOGIN) || uri.startsWith(MANAGER_LOGIN)) {
+        //获取session
+        if (uri.startsWith(LOGIN) || uri.startsWith(ERROR)) {
 
-        } else {
-            boolean verifyFlag = verify(request, response);
-            if (!verifyFlag) {
+        }else {
+            HttpSession session = request.getSession(false);
+            ServerResponse serverResponse;
+            if (session == null) {
+                serverResponse = ServerResponse.createByErrorCodeMessage(ResponseCode.SESSION_VERIFY_FAILURE.getCode(), ResponseCode.SESSION_VERIFY_FAILURE.getDesc());
+                response.getWriter().print(JsonUtils.object2json(serverResponse));
+                return;
+            }
+            Object object = session.getAttribute(managerSession);
+            if (object == null) {
+                serverResponse = ServerResponse.createByErrorCodeMessage(ResponseCode.SESSION_VERIFY_FAILURE.getCode(), ResponseCode.SESSION_VERIFY_FAILURE.getDesc());
+                response.getWriter().print(JsonUtils.object2json(serverResponse));
                 return;
             }
         }
         chain.doFilter(request, response);
-    }
-
-    /**
-     * 验证session token
-     *
-     * @param request
-     * @param response
-     * @return true成功  false失败
-     * @throws IOException
-     */
-    private boolean verify(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        //判断用户是否发token
-        String token = request.getHeader("token");
-        if (StringUtils.isEmpty(token)) {
-            ServerResponse serverResponse = ServerResponse.createByErrorCodeMessage(ResponseCode.TOKEN_NOT_EXIST.getCode(), ResponseCode.TOKEN_NOT_EXIST.getDesc());
-            response.getWriter().write(JsonUtils.object2json(serverResponse));
-            return false;
-        }
-        //token验证
-        Map<String, String> claims = TokenFactory.verifyToken(token);
-        if (claims == null) {
-            ServerResponse serverResponse = ServerResponse.createByErrorCodeMessage(ResponseCode.TOKEN_VERIFY_FAILURE.getCode(), ResponseCode.TOKEN_VERIFY_FAILURE.getDesc());
-            response.getWriter().write(JsonUtils.object2json(serverResponse));
-            return false;
-        }
-
-        return true;
     }
 
 }
