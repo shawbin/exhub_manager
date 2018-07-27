@@ -9,12 +9,9 @@ import io.exhub.exhub_manager.pojo.DO.LoginRecordDOExample;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDOExample;
 import io.exhub.exhub_manager.service.IBackstageService;
-import io.exhub.exhub_manager.util.EncryptUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
@@ -50,7 +47,7 @@ public class BackstageServiceImpl implements IBackstageService {
         if (managerUser == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ACCOUNT_NOT_EXIST.getCode(), ResponseCode.ACCOUNT_NOT_EXIST.getDesc());
         }
-        if (!EncryptUtil.matches(password, managerUser.getPassword())) {
+        if (!StringUtils.equals(password, managerUser.getPassword())) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.PASSWORD_ERROR.getCode(), ResponseCode.PASSWORD_ERROR.getDesc());
         }
         //将managerUser放入session
@@ -105,7 +102,7 @@ public class BackstageServiceImpl implements IBackstageService {
 
         ManagerUserDO managerUser = new ManagerUserDO();
         managerUser.setUsername(username);
-        managerUser.setPassword(EncryptUtil.encode(password));
+        managerUser.setPassword(password);
         managerUser.setRoleId(role);
         //保存t_manager_user
         managerUserMapper.insertSelective(managerUser);

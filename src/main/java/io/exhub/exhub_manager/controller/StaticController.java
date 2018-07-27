@@ -1,11 +1,8 @@
 package io.exhub.exhub_manager.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.thymeleaf.TemplateEngine;
 
 /**
  * @author
@@ -14,11 +11,8 @@ import org.thymeleaf.TemplateEngine;
 @Controller
 public class StaticController {
 
-    @Autowired
-    private TemplateEngine templateEngine;
-
     @GetMapping(value = "/login")
-    public String getIndex() {
+    public String getLogin() {
 
         return "login";
     }
@@ -39,8 +33,27 @@ public class StaticController {
      */
     @GetMapping(value = "showThisHtml.html")
     public String managerListKyc(@RequestParam String pageName){
-        return "/demo/"+pageName;
+            return "/demo/"+pageName;
     }
 
+    /**
+     * 用户管理-kyc
+     * @return
+     */
+    @GetMapping(value = "user/identity.html")
+    public String userIdentity() {
+
+        return "user/identity";
+    }
+
+    /**
+     * 首页
+     * @return
+     */
+    @GetMapping(value = "index.html")
+    public String getIndex() {
+
+        return "index";
+    }
 
 }

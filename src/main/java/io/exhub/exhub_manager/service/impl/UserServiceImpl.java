@@ -1,10 +1,8 @@
 package io.exhub.exhub_manager.service.impl;
 
-import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.mapper.IdentityAuthenticationDOMapper;
 import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDO;
-import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDOExample;
 import io.exhub.exhub_manager.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

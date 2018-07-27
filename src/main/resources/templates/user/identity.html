@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退了</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">管理后台</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/user/identity.html">用户管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 数据表格 -->
+        <table id="identityList" lay-filter="identityList"></table>
+
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script>
+    //列表
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#identityList'
+            ,height: 315
+            ,url: '/user/identity/authentication' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+                ,{field: 'fristName', title: '用户名', width:80}
+                ,{field: 'lastName', title: '性别', width:80, sort: true}
+                ,{field: 'countryRegion', title: '城市', width:80}
+                ,{field: 'idType', title: '签名', width: 177}
+                ,{field: 'idNumber', title: '积分', width: 80, sort: true}
+                ,{field: 'status', title: '评分', width: 80, sort: true}
+                ,{field: 'message', title: '职业', width: 80}
+                ,{field: 'create_time', title: '申请时间', width: 135, sort: true}
+            ]]
+        });
+
+    });
+
+</script>
+</body>
+</html>
