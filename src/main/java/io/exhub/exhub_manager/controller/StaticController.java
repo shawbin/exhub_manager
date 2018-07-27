@@ -17,9 +17,6 @@ public class StaticController {
     @Autowired
     private TemplateEngine templateEngine;
 
-    @Value("${exhubConfig.index}")
-    private String index;
-
     @GetMapping(value = "/login")
     public String getIndex() {
 
