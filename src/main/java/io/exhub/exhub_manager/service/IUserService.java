@@ -1,57 +1,38 @@
 package io.exhub.exhub_manager.service;
 
 import io.exhub.exhub_manager.common.ServerResponse;
-import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
-import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
+import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDO;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 /**
+ * 用户管理
  * @author
- * @data 2018/7/25
+ * @data 2018/7/27
  */
 public interface IUserService {
 
     /**
-     * manager登录
-     * @param username
-     * @param password
-     * @param session
+     * 按照条件查询身份申请
+     * @param identityDO
      * @return
      */
-    ServerResponse postLogin(String username, String password, HttpSession session);
+    List<IdentityAuthenticationDO> postIdentityAuthentication(Map<String, Object> identityDO);
 
     /**
-     * 通过用户名查找用户
-     * @param username
+     * 身份认证结果
+     * @param id
      * @return
      */
-    ManagerUserDO getManagerUserByUsername(String username);
+    IdentityAuthenticationDO getIdentityId(Long id);
 
     /**
-     * 判断用户名是否重复
-     * @param username
+     * 修改审核结果和备注
+     * @param id
+     * @param status
+     * @param message
      * @return
      */
-    ServerResponse getLoginCheckUsername(String username);
-
-    /**
-     * 分配账号
-     * @param role 角色
-     * @param username
-     * @param password
-     * @return
-     */
-    ServerResponse postAssignedAccount(Long role, String username, String password);
-
-
-
-    /**
-     * 获取登录记录
-     * @return
-     * @param //userId
-     */
-    List<LoginRecordDO> getLoginRecord(Long userId);
-
+    ServerResponse postIdentityAuditId(Long id, Byte status, String message);
 }

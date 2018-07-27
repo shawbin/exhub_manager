@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
-import io.exhub.exhub_manager.service.IUserService;
+import io.exhub.exhub_manager.service.IBackstageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class BackstageController {
 
     @Autowired
-    private IUserService iUserService;
+    private IBackstageService iBackstageService;
 
     /**
      * 登录
@@ -42,7 +42,7 @@ public class BackstageController {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.PARAMETER_ERROR.getCode(), ResponseCode.PARAMETER_ERROR.getDesc());
         }
-        return iUserService.postLogin(username, password, session);
+        return iBackstageService.postLogin(username, password, session);
     }
 
     /**
@@ -54,7 +54,7 @@ public class BackstageController {
     @ResponseBody
     public ServerResponse getLoginCheckUsername(@PathVariable String username) {
 
-        return iUserService.getLoginCheckUsername(username);
+        return iBackstageService.getLoginCheckUsername(username);
     }
 
     /**
@@ -71,7 +71,7 @@ public class BackstageController {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.PARAMETER_ERROR.getCode(), ResponseCode.PARAMETER_ERROR.getDesc());
         }
-        return iUserService.postAssignedAccount(role, username, password);
+        return iBackstageService.postAssignedAccount(role, username, password);
     }
 
     /**
@@ -97,7 +97,7 @@ public class BackstageController {
                                          @RequestParam Integer pageSize) {
 
         Page<Object> page = PageHelper.startPage(pageNum, pageSize);
-        List<LoginRecordDO> loginRecordList = iUserService.getLoginRecord(userId);
+        List<LoginRecordDO> loginRecordList = iBackstageService.getLoginRecord(userId);
         Map<String, Object> data = ImmutableMap.of("total", page.getTotal(),
                 "loginRecordList", loginRecordList);
         return ServerResponse.createBySuccess(data);

@@ -425,4 +425,34 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!-- 根据条件查询kyc申请 -->
+  <select id="selectIdentityByClause" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_identity_authentication
+    where
+    <if test="params.fristName != null and params.fristName != ''">
+      and frist_name = #{params.fristName}
+    </if>
+    <if test="params.lastName != null and params.lastName != ''">
+      and last_name = #{params.lastName}
+    </if>
+    <if test="params.countryRegion != null and params.countryRegion != ''">
+      and country_region = #{params.countryRegion}
+    </if>
+    <if test="params.startTime != null and params.startTime != '' and params.endTime != null and params.endTime != ''">
+      and update_time between #{params.startTime} and #{params.endTime}
+    </if>
+    <if test="params.idType != null and params.idType != ''">
+      and id_type = #{params.idType}
+    </if>
+    <if test="params.idNumber != null and params.idNumber != ''">
+      and id_number = #{params.idNumber}
+    </if>
+    <if test="params.status != null and params.status != ''">
+      and status = #{params.status}
+    </if>
+    order by status desc, create_time desc
+
+  </select>
 </mapper>

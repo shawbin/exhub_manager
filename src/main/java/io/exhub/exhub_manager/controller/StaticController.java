@@ -41,4 +41,6 @@ public class StaticController {
     public String managerListKyc(@RequestParam String pageName){
         return "/demo/"+pageName;
     }
+
+
 }
