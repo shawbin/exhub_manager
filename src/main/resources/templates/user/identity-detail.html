@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div th:include="/common/header :: header"></div>
+    <div class="layui-body">
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">个人信息</h2>
+                <div class="layui-colla-content layui-show">
+                    <label class="layui-form-label">名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" disabled="disabled"
+                               autocomplete="off" class="layui-input" th:value="${identity.fristName}">
+                    </div>
+                    <label class="layui-form-label">姓</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" disabled="disabled"
+                               autocomplete="off" class="layui-input" th:value="${identity.lastName}">
+                    </div>
+                    <label class="layui-form-label">国家/地区</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" disabled="disabled"
+                               autocomplete="off" class="layui-input" th:value="${identity.countryRegion}">
+                    </div>
+                    <label class="layui-form-label">证件类型</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" disabled="disabled"
+                               autocomplete="off" class="layui-input" th:value="${identity.idType}">
+                    </div>
+                    <label class="layui-form-label">证件号码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" disabled="disabled"
+                               autocomplete="off" class="layui-input" th:value="${identity.idNumber}">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">照片信息</h2>
+                <div class="layui-colla-content layui-show">
+                    <div class="layui-nav-img">
+                        <label class="layui-form-label-col">正面</label>
+                        <img th:src="${identity.facePhoto}">
+                    </div>
+                    <div class="layui-nav-img">
+                        <label class="layui-form-label-col">反面</label>
+                        <img th:src="${identity.backPhoto}">
+                    </div>
+                    <div class="layui-nav-img">
+                        <label class="layui-form-label-col">自拍</label>
+                        <img th:src="${identity.signaturePhoto}">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">操作</h2>
+                <div class="layui-colla-content layui-show">
+                    <label class="layui-form-label">审核状态: <span th:text="${identity.status}"></span></label>
+                    <label class="layui-form-label" th:if="${identity.status}==1">通过理由:</label>
+                    <label class="layui-form-label" th:if="${identity.status}==0">拒绝理由:</label>
+                    <textarea class="layui-textarea" th:if="${identity.status}==0" th:text="${identity.message}"></textarea>
+                    <textarea class="layui-textarea" th:if="${identity.status}==1" th:text="${identity.message}"></textarea>
+                    <a href="javascript:history.go(-1);" class="layui-btn">后退</a>
+                    <button class="layui-btn" th:if="${identity.status}==2" onclick="aduit(2)">审核</button>
+                    <button class="layui-btn" th:if="${identity.status}==0" onclick="aduit(0)">通过认证</button>
+                    <button class="layui-btn" th:if="${identity.status}==1" onclick="aduit(1)">拒绝认证</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © exhub.io
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script>
+    //列表
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    function aduit(status) {
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.open({
+                type: 1,
+                closeBtn: false,
+                shift: 7,
+                shadeClose: true,
+                content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入奖项名称</p><input id='awardName' class='form-control' type='text' name='awardName' '/></div>" +
+                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入奖项描述</p><input id='awardDescription' class='form-control' type='text' name='awardDescription'/></div>"+
+                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入获奖人数</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount'/></div>"+
+                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入奖项类别</p><input id='awardKind' class='form-control' type='text' name='awardKind'/>" +
+                "<button style='margin-top:5%;' type='button' class='btn btn-block btn-success btn-lg'>提交</button></div>"
+            });
+        })
+    }
+
+</script>
+</body>
+</html>

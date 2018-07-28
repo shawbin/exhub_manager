@@ -2,6 +2,7 @@ package io.exhub.exhub_manager.service;
 
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDO;
+import io.exhub.exhub_manager.pojo.DO.PointRecordDO;
 
 import java.util.List;
 import java.util.Map;
@@ -35,4 +36,5 @@ public interface IUserService {
      * @return
      */
     ServerResponse postIdentityAuditId(Long id, Byte status, String message);
+
 }

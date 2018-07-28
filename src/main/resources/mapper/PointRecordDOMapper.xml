@@ -315,4 +315,11 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!-- 通过userId、type查询注册/推荐人最多一条记录 -->
+  <select id="getPointByUserIdType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_point_record
+    where referral = (select username from user where user_Id = #{userId}) and type = #{type}
+  </select>
 </mapper>

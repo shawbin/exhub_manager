@@ -30,14 +30,17 @@ public class UserController {
     private IUserService iUserService;
 
     @ResponseBody
-    @PostMapping(value = "/identity/authentication", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ServerResponse postIdentityAuthentication(@RequestBody Map<String, Object> params) {
+    @PostMapping(value = "/identity/authentication/{pageNum}/{pageSize}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> postIdentityAuthentication(@PathVariable Integer pageNum, @PathVariable Integer pageSize,
+                                                     @RequestBody Map<String, Object> params) {
 
-        Page page = PageHelper.startPage(1, 10, true);
+        Page page = PageHelper.startPage(pageNum, pageSize, true);
         List<IdentityAuthenticationDO> identityList = iUserService.postIdentityAuthentication(params);
-        Map<String, Object> data = ImmutableMap.of("total", page.getTotal(),
-                "identityList", identityList);
-        return ServerResponse.createBySuccess(data);
+        Map<String, Object> data = ImmutableMap.of("count", page.getTotal(),
+                "data", identityList,
+                "msg", "",
+                "code", 0);
+        return data;
     }
 
     /**
@@ -49,7 +52,7 @@ public class UserController {
     public String getIdentityId(@PathVariable Long id, ModelMap modelMap) {
 
         modelMap.put("identity", iUserService.getIdentityId(id));
-        return "redirect:identity";
+        return "user/identity-detail";
     }
 
     /**

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class StaticController {
 
-    @GetMapping(value = "/login")
+    @GetMapping(value = "/login.html")
     public String getLogin() {
 
         return "login";

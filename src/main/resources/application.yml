@@ -35,6 +35,8 @@ mybatis:
 
 exhubConfig:
   managerSession: managerUser
+  registerPoint: 100
+  referrerPoint: 88
 
 logging:
   level:

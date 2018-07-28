@@ -16,4 +16,12 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface PointRecordDOMapper extends BaseMapper<PointRecordDO, PointRecordDOExample>{
+
+    /**
+     * 通过userId、type查询注册/推荐人最多一条记录
+     * @param userId 被推荐人
+     * @param type
+     * @return
+     */
+    PointRecordDO getPointByUserIdType(@Param(value = "userId") Long userId, @Param(value = "type") Byte type);
 }
