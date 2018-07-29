@@ -66,17 +66,20 @@ public class UserServiceImpl implements IUserService{
     @Transactional(rollbackFor = Exception.class)
     public ServerResponse postIdentityAuditId(Long id, Byte status, String message) {
 
-        IdentityAuthenticationDO identity = new IdentityAuthenticationDO();
-        identity.setId(id);
-        identity.setStatus(status);
-        identity.setMessage(message);
-        identityMapper.updateByPrimaryKeySelective(identity);
-        //身份审核成功 加积分
-        if (status.equals(IdentityAuthenticationDO.ADUIT_PASS)) {
-            //更新注册积分记录
-            updatePoint(identity.getUserId(), PointRecordDO.REGIST, registerPoint);
-            //更新被推荐记录
-            updatePoint(identity.getUserId(), PointRecordDO.REFFER, referrerPoint);
+        IdentityAuthenticationDO identityDO = identityMapper.selectByPrimaryKey(id);
+        if (identityDO != null) {
+            IdentityAuthenticationDO identity = new IdentityAuthenticationDO();
+            identity.setId(id);
+            identity.setStatus(status);
+            identity.setMessage(message);
+            identityMapper.updateByPrimaryKeySelective(identity);
+            //身份审核成功 加积分
+            if (status.equals(IdentityAuthenticationDO.ADUIT_PASS)) {
+                //更新注册积分记录
+                updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint);
+                //更新被推荐记录
+                updatePoint(identityDO.getUserId(), PointRecordDO.REFFER, referrerPoint);
+            }
         }
         return ServerResponse.createBySuccess();
     }

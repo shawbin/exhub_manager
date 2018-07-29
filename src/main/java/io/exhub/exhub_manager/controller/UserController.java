@@ -30,11 +30,10 @@ public class UserController {
     private IUserService iUserService;
 
     @ResponseBody
-    @PostMapping(value = "/identity/authentication/{pageNum}/{pageSize}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> postIdentityAuthentication(@PathVariable Integer pageNum, @PathVariable Integer pageSize,
-                                                     @RequestBody Map<String, Object> params) {
+    @PostMapping(value = "/identity/authentication", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> postIdentityAuthentication(@RequestBody Map<String, Object> params) {
 
-        Page page = PageHelper.startPage(pageNum, pageSize, true);
+        Page page = PageHelper.startPage(Integer.parseInt(String.valueOf(params.get("page"))), Integer.parseInt(String.valueOf(params.get("limit"))), true);
         List<IdentityAuthenticationDO> identityList = iUserService.postIdentityAuthentication(params);
         Map<String, Object> data = ImmutableMap.of("count", page.getTotal(),
                 "data", identityList,

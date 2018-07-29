@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
     <link rel="stylesheet" href="../../static/layui/css/layui.css">
 </head>
 <body class="layui-layout-body">
@@ -12,7 +13,7 @@
     <div class="layui-body">
         <div class="layui-collapse">
             <div class="layui-colla-item">
-                <h2 class="layui-colla-title">个人信息</h2>
+                <h2 class="layui-colla-title">个人信息<input class="identityId" type="hidden" th:value="${identity.id}"/></h2>
                 <div class="layui-colla-content layui-show">
                     <label class="layui-form-label">名</label>
                     <div class="layui-input-block">
@@ -32,7 +33,9 @@
                     <label class="layui-form-label">证件类型</label>
                     <div class="layui-input-block">
                         <input type="text" name="title" required lay-verify="required" disabled="disabled"
-                               autocomplete="off" class="layui-input" th:value="${identity.idType}">
+                               autocomplete="off" class="layui-input" value="身份证" th:if="${identity.idType}==0">
+                        <input type="text" name="title" required lay-verify="required" disabled="disabled"
+                               autocomplete="off" class="layui-input" value="护照" th:if="${identity.idType}==1">
                     </div>
                     <label class="layui-form-label">证件号码</label>
                     <div class="layui-input-block">
@@ -43,29 +46,38 @@
             </div>
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">照片信息</h2>
-                <div class="layui-colla-content layui-show">
-                    <div class="layui-nav-img">
-                        <label class="layui-form-label-col">正面</label>
-                        <img th:src="${identity.facePhoto}">
+                <div class="layui-colla-content layui-show picBox">
+                    <div class="picBoxChild">
+                        <label>正面</label>
+                        <!--<img th:src="${identity.facePhoto}">-->
+                        <img src="../../static/layui/images/face/ss.jpg" alt="">
                     </div>
-                    <div class="layui-nav-img">
-                        <label class="layui-form-label-col">反面</label>
-                        <img th:src="${identity.backPhoto}">
+                    <div class="picBoxChild">
+                        <label>反面:</label>
+                        <!--<img th:src="${identity.backPhoto}">-->
+                        <img src="../../static/layui/images/face/ss.jpg" alt="">
                     </div>
-                    <div class="layui-nav-img">
-                        <label class="layui-form-label-col">自拍</label>
-                        <img th:src="${identity.signaturePhoto}">
+                    <div class="picBoxChild">
+                        <label>自拍:</label>
+                        <!--<img th:src="${identity.signaturePhoto}">-->
+                        <img src="../../static/layui/images/face/ss.jpg" alt="">
                     </div>
                 </div>
             </div>
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">操作</h2>
                 <div class="layui-colla-content layui-show">
-                    <label class="layui-form-label">审核状态: <span th:text="${identity.status}"></span></label>
+                    <label class="layui-form-label">审核状态:
+                        <span th:if="${identity.status}==0">拒绝</span>
+                        <span th:if="${identity.status}==1">通过</span>
+                        <span th:if="${identity.status}==2">待审核</span>
+                    </label>
                     <label class="layui-form-label" th:if="${identity.status}==1">通过理由:</label>
                     <label class="layui-form-label" th:if="${identity.status}==0">拒绝理由:</label>
-                    <textarea class="layui-textarea" th:if="${identity.status}==0" th:text="${identity.message}"></textarea>
-                    <textarea class="layui-textarea" th:if="${identity.status}==1" th:text="${identity.message}"></textarea>
+                    <textarea class="layui-textarea" th:if="${identity.status}==0"
+                              th:text="${identity.message}" disabled="disabled"></textarea>
+                    <textarea class="layui-textarea" th:if="${identity.status}==1"
+                              th:text="${identity.message}" disabled="disabled"></textarea>
                     <a href="javascript:history.go(-1);" class="layui-btn">后退</a>
                     <button class="layui-btn" th:if="${identity.status}==2" onclick="aduit(2)">审核</button>
                     <button class="layui-btn" th:if="${identity.status}==0" onclick="aduit(0)">通过认证</button>
@@ -81,26 +93,72 @@
 </div>
 <script src="../../static/layui/layui.js"></script>
 <script>
+    var global = {
+        auditStatus: ['拒绝', '通过', '待审核']
+    }
     //列表
     layui.use('element', function () {
         var element = layui.element;
     });
+
     function aduit(status) {
+
         layui.use('layer', function () {
             var layer = layui.layer;
             layer.open({
+                title: '操作提示',
                 type: 1,
-                closeBtn: false,
-                shift: 7,
-                shadeClose: true,
-                content: "<div style='width:350px;'><div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入奖项名称</p><input id='awardName' class='form-control' type='text' name='awardName' '/></div>" +
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入奖项描述</p><input id='awardDescription' class='form-control' type='text' name='awardDescription'/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入获奖人数</p><input id='awardUserCount' class='form-control' type='number' name='awardUserCount'/></div>"+
-                "<div style='width:320px;margin-left: 3%;' class='form-group has-feedback'><p>请输入奖项类别</p><input id='awardKind' class='form-control' type='text' name='awardKind'/>" +
-                "<button style='margin-top:5%;' type='button' class='btn btn-block btn-success btn-lg'>提交</button></div>"
+                area: ['500px', '300px'],
+                content: '<form class="layui-form" action="">' +
+                '  <div class="layui-form-item">' +
+                '    <label class="layui-form-label">单选框</label>' +
+                '    <div class="layui-input-block">' +
+                '      <input type="radio" name="status" value="1" title="通过">' +
+                '      <input type="radio" name="status" value="0" title="拒绝" checked>' +
+                '    </div>' +
+                '  </div>' +
+                '  <div class="layui-form-item layui-form-text">' +
+                '    <label class="layui-form-label">文本域</label>' +
+                '    <div class="layui-input-block">' +
+                '      <textarea name="message" placeholder="请输入内容" class="layui-textarea" ></textarea>' +
+                '    </div>' +
+                '  </div>' +
+                '  <div class="layui-form-item">' +
+                '    <div class="layui-input-block">' +
+                '      <button class="layui-btn" lay-submit lay-filter="formAudit">确定</button>' +
+                '      <button type="reset" class="layui-btn layui-btn-primary">重置</button>' +
+                '    </div>' +
+                '  </div>' +
+                '</form>'
             });
         })
     }
+
+    //表单提交
+    layui.use(['form', 'jquery'], function () {
+        var form = layui.form,
+        $ = layui.$ //jquery
+        var id = $('.identityId').val()
+        //监听提交
+        form.on('submit(formAudit)', function (data) {
+            $.ajax({
+                url: '/user/identity/audit/' + id,
+                type: 'post',
+                data: JSON.stringify(data.field),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.status == 200) {
+                        layer.msg('操作成功')
+                    }
+                    window.location.href = "/user/identity/" + id;
+                },
+                error: function () {
+                    layer.msg('系统错误')
+                }
+            })
+            return false;
+        });
+    });
 
 </script>
 </body>

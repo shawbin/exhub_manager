@@ -1,0 +1,135 @@
+/*样式重置*/
+html,body,ul,li,ol,dl,dd,dt,p,h1,h2,h3,h4,h5,h6,form,fieldset,legend,img {
+    margin: 0;
+    padding: 0;
+}
+fieldset,img {
+    border: 0;
+}
+address,caption,cite,code,dfn,th,var {
+    font-style: normal;
+    font-weight: normal;
+}
+ul,ol {
+    list-style: none;
+}
+input {
+    padding-top: 0;
+    padding-bottom: 0;
+    font-family: "SimSun","宋体";
+}
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+select,input {
+    vertical-align: middle;
+}
+select,input,textarea {
+    font-size: 12px;
+    margin: 0;
+}
+input[type="text"],input[type="password"],textarea {
+    outline-style: none;
+    -webkit-appearance: none;
+}
+textarea {
+    resize: none;
+}
+table {
+    border-collapse: collapse;
+}
+.fl{
+    float: left;
+}
+.rt{
+    float: right;
+}
+/*End 样式重置*/
+/*identity-detail.html*/
+.picBox{
+    overflow: hidden;
+}
+.picBoxChild{
+    float: left;
+    width: 33%;
+    text-align: center;
+}
+.picBoxChild label{
+    padding: 9px 0;
+    line-height: 20px;
+    text-align: left;
+    font-size: 24px;
+}
+.picBoxChild img{
+    width: 350px;
+    margin-left: 50px;
+}
+/*ceng*/
+.popMask{
+    position: fixed;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    background: rgba(0,0,0,.8);
+}
+/*弹窗*/
+.popBox{
+    position: fixed;
+    display: none;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    z-index: 10001;
+    background: #fff;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.popTop{
+    overflow: hidden;
+    margin: 10px;
+}
+.popBoxChild{
+    width: 430px;
+    /*padding: 10px 20px;*/
+}
+.popBoxChild p{
+    text-align: center;
+
+}
+.popSelect{
+    overflow: hidden;
+    margin: 20px 80px;
+}
+.popTxt{
+    margin: 0 auto;
+    width: 380px;
+}
+.popTxt textarea{
+    width: 93%;
+    padding: 10px;
+    height: 80px;
+}
+.popThen{
+    overflow: hidden;
+    margin: 10px 30px;
+}
+.popThen span{
+    display: inline-block;
+    height: 30px;
+    width: 100px;
+    text-align: center;
+    line-height: 30px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #d1d1d1;
+}

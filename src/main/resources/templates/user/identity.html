@@ -4,12 +4,72 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
     <link rel="stylesheet" href="../../static/layui/css/layui.css">
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div th:include="/common/header :: header"></div>
     <div class="layui-body">
+        <!-- 提交表单 -->
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="fristName" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+                <label class="layui-form-label">姓</label>
+                <div class="layui-input-block">
+                    <input type="text" name="lastName" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+                <label class="layui-form-label">证件号码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="idNumber" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">国家/地区</label>
+                <div class="layui-input-block">
+                    <select name="countryRegion">
+                        <option value="" selected>Select a country</option>
+                        <option value="China">China</option>
+                        <option value="America">America</option>
+                    </select>
+                </div>
+                <label class="layui-form-label">证件类型</label>
+                <div class="layui-input-block">
+                    <select name="idType">
+                        <option value="" selected>全部</option>
+                        <option value="0">身份证</option>
+                        <option value="1">护照</option>
+                    </select>
+                </div>
+                <label class="layui-form-label">实名状态</label>
+                <div class="layui-input-block">
+                    <select name="status" >
+                        <option value="">全部</option>
+                        <option value="0" >已拒绝</option>
+                        <option value="1">已通过</option>
+                        <option value="2">待审核</option>
+                    </select>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <input type="text" class="layui-input" name="startTime" id="startTime">
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <input type="text" class="layui-input" name="endTime" id="endTime">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
         <!-- 数据表格 -->
         <table class="layui-table" lay-filter="identityList">
             <thead>
@@ -42,28 +102,57 @@
     layui.use('element', function () {
         var element = layui.element;
     });
+    //时间
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startTime',
+            value: '2018-07-27'
+        });
+        laydate.render({
+            elem: '#endTime',
+            value: '2018-07-29'
+        });
+    });
+    //表单提交
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            console.log(JSON.stringify(data.field))
+            initTable(data.field)
+            return false;
+        });
+    });
     (function () {
+        var data = {
+            fristName: ''
+            , lastName: ''
+            , countryRegion: ''
+            , startTime: ''
+            , endTime: ''
+            , idType: ''
+            , idNumber: ''
+            , status: ''
+        }
+        initTable(data)
+    })();
+
+    function initTable(data) {
         //加载列表的后端 url
-        var getListUrl = '/user/identity/authentication/1/10';
+        var getListUrl = '/user/identity/authentication';
         var tableOptions = {
             width: 892,
             height: 332,
             url: getListUrl, //请求地址
             method: 'POST', //方式
             contentType: 'application/json',
-            request: {
-                fristName: ''
-                , lastName: ''
-                , countryRegion: ''
-                , startTime: ''
-                , endTime: ''
-                , idType: ''
-                , idNumber: ''
-                , status: ''
-            },
+            where: data,
             id: 'listReload', //生成 Layui table 的标识 id，必须提供，用于后文刷新操作，笔者该处出过问题
             page: true, //是否分页
-            where: {type: "all"}, //请求后端接口的条件，该处就是条件错误点，按照官方给出的代码示例，原先写成了 where: { key : { type: "all" } }，结果并不是我想的那样，如此写，key 将是后端的一个类作为参数，里面有 type 属性，如果误以为 key 是 Layui 提供的格式，那就大错特错了
             response: { //定义后端 json 格式，详细参见官方文档
                 statusName: 'code', //状态字段名称
                 statusCode: '0', //状态字段成功值
@@ -108,8 +197,7 @@
 
             //其他和 tree 相关的方法，其中包括 点击 tree 项调用刷新方法
         });
-    })();
-
+    }
 </script>
 </body>
 </html>
