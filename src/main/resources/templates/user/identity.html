@@ -47,9 +47,9 @@
                 </div>
                 <label class="layui-form-label">实名状态</label>
                 <div class="layui-input-block">
-                    <select name="status" >
+                    <select name="status">
                         <option value="">全部</option>
-                        <option value="0" >已拒绝</option>
+                        <option value="0">已拒绝</option>
                         <option value="1">已通过</option>
                         <option value="2">待审核</option>
                     </select>
@@ -75,13 +75,13 @@
             <thead>
             <tr>
                 <th lay-data="{field:'id', width:60, fixed: 'left'}">用户编号</th>
-                <th lay-data="{field:'createTime', width:80}">申请时间</th>
+                <th lay-data="{field:'createTime', width:80, templet: '#createTimeTem'}">申请时间</th>
                 <th lay-data="{field:'fristName', width:80}">名</th>
                 <th lay-data="{field:'lastName', width:80}">姓</th>
                 <th lay-data="{field:'countryRegion', width:70}">国家/地区</th>
-                <th lay-data="{field:'idType', width:80}">证件类型</th>
+                <th lay-data="{field:'idType', width:80, templet: '#idTypeTem'}">证件类型</th>
                 <th lay-data="{field:'idNumber', width:80}">证件号码</th>
-                <th lay-data="{field:'status', width:80}">实名状态</th>
+                <th lay-data="{field:'status', width:80, templet: '#statusTem'}">实名状态</th>
                 <th lay-data="{field:'message', width:80, fixed: 'right'}">拒绝理由</th>
                 <th lay-data="{width:100, align:'center', toolbar: '#barDemo', align:'center', fixed: 'right'}">操作</th>
             </tr>
@@ -90,6 +90,30 @@
         <script type="text/html" id="barDemo">
             <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
         </script>
+        <script type="text/html" id="createTimeTem">
+            {{d.createTime}}
+            {{#
+                var date = new Date();
+                date.setTime(d.createTime);
+                return date.Format("yyyy-MM-dd hh:mm:ss");
+            }}
+        </script>
+        <script type="text/html" id="idTypeTem">
+            {{#  if(d.idType == 0){ }}
+            身份证
+            {{#  } else { }}
+            护照
+            {{#  } }}
+        </script>
+        <script type="text/html" id="statusTem">
+            {{#  if(d.status == 0){ }}
+            已拒绝
+            {{#  } else if(d.status == 1) { }}
+            已通过
+            {{#  } else { }}
+            待审核
+            {{#  } }}
+        </script>
     </div>
     <div class="layui-footer">
         <!-- 底部固定区域 -->
@@ -97,13 +121,14 @@
     </div>
 </div>
 <script src="../../static/layui/layui.js"></script>
+<script src="../../static/js/common.js"></script>
 <script>
     //列表
     layui.use('element', function () {
         var element = layui.element;
     });
     //时间
-    layui.use('laydate', function(){
+    layui.use('laydate', function () {
         var laydate = layui.laydate;
 
         //执行一个laydate实例
@@ -117,11 +142,11 @@
         });
     });
     //表单提交
-    layui.use('form', function(){
+    layui.use('form', function () {
         var form = layui.form;
 
         //监听提交
-        form.on('submit(formDemo)', function(data){
+        form.on('submit(formDemo)', function (data) {
             console.log(JSON.stringify(data.field))
             initTable(data.field)
             return false;
@@ -183,7 +208,7 @@
 
             //表刷新方法
             var reloadTable = function (item) {
-                table.reload("listReload", { //此处是上文提到的 初始化标识id
+                table.reload("identityList", { //此处是上文提到的 初始化标识id
                     where: {
                         //key: { //该写法上文已经提到
                         type: item.type, id: item.id
