@@ -95,7 +95,7 @@
             {{#
                 var date = new Date();
                 date.setTime(d.createTime);
-                return date.Format("yyyy-MM-dd hh:mm:ss");
+                return date.format("yyyy-MM-dd hh:mm:ss");
             }}
         </script>
         <script type="text/html" id="idTypeTem">
@@ -134,11 +134,11 @@
         //执行一个laydate实例
         laydate.render({
             elem: '#startTime',
-            value: '2018-07-27'
+            value: new Date().monthStartFormat("yyyy-MM-dd")
         });
         laydate.render({
             elem: '#endTime',
-            value: '2018-07-29'
+            value: new Date().format("yyyy-MM-dd")
         });
     });
     //表单提交
