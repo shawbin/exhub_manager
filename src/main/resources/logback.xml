@@ -12,7 +12,7 @@
     <appender name="exhub_manager_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>/opt/bilala/logs/info.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/opt/exhub/logs/exhub_access.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/opt/exhub/logs/info.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -38,7 +38,7 @@
     </appender>
 
     <logger name="io.exhub.exhub_manager" additivity="false" level="INFO">
-        <appender-ref ref="exhub_access_info"/>
+        <appender-ref ref="exhub_manager_info"/>
         <appender-ref ref="console"/>
     </logger>
 
