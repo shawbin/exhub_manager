@@ -31,6 +31,7 @@ public class FilterConfiguration {
         registration.addInitParameter("exceptUrlPattern", "/login.html");
         registration.addInitParameter("forwardUrl", "/login.html");
         registration.addInitParameter("login", "/backstage/user/login");
+        registration.addInitParameter("staticResource", "/static");
         //设置优先级
         registration.setName("SessionFilter");
         //设置优先级

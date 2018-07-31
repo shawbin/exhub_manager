@@ -27,6 +27,8 @@ public class SessionFilter implements Filter{
 
     private String login;
 
+    private String staticResource;
+
     @Override
     public void init(FilterConfig cfg) throws ServletException {
 
@@ -37,6 +39,7 @@ public class SessionFilter implements Filter{
         }
         forwardUrl = cfg.getInitParameter("forwardUrl");
         login = cfg.getInitParameter("login");
+        staticResource = cfg.getInitParameter("staticResource");
     }
 
     @Override
@@ -51,7 +54,7 @@ public class SessionFilter implements Filter{
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String servletPath = request.getServletPath();
         // 如果请求的路径与forwardUrl相同，或请求的路径是排除的URL时，则直接放行
-        if (servletPath.startsWith(login) || servletPath.equals(forwardUrl) || exceptUrlPattern.matcher(servletPath).matches()) {
+        if (servletPath.startsWith(login) || servletPath.startsWith(staticResource) || servletPath.equals(forwardUrl) || exceptUrlPattern.matcher(servletPath).matches()) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
