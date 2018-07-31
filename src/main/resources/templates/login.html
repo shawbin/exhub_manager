@@ -47,16 +47,24 @@
     // 登录提交
     layui.use(['form', 'jquery'], function () {
         var form = layui.form,
-            jquery = layui.jquery;
+            $ = layui.$;
 
         //监听提交
         form.on('submit(login)', function (data) {
-            layer.msg(JSON.stringify(data.field));
-            jquery.ajax({
-                url: 'http://localhost/manager/user/1022/login/record?pageNum=1&pageSize=10',
-                type: 'get',
+            $.ajax({
+                url: '/backstage/user/login',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(data.field),
                 success: function (res) {
-                    layer.msg(JSON.stringify(res))
+                    if (res.status == 200) {
+                        window.location.href = '/index.html';
+                    }else {
+                        layer.msg(res.msg);
+                    }
+                },
+                error: function () {
+                    layer.msg("系统错误")
                 }
             });
             return false;
