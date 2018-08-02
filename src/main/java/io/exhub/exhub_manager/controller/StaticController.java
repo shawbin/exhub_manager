@@ -1,8 +1,23 @@
 package io.exhub.exhub_manager.controller;
 
+import com.google.common.collect.ImmutableMap;
+import io.exhub.exhub_manager.mapper.ManagerModuleDOMapper;
+import io.exhub.exhub_manager.mapper.ManagerRoleDOMapper;
+import io.exhub.exhub_manager.pojo.DO.ManagerModuleDO;
+import io.exhub.exhub_manager.pojo.DO.ManagerRoleDO;
+import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author
@@ -11,6 +26,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class StaticController {
 
+    @Autowired
+    private ManagerModuleDOMapper moduleMapper;
+    @Autowired
+    private ManagerRoleDOMapper roleMapper;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
+    @Value("${exhubConfig.managerSession}")
+    private String managerSession;
+    @Value("${exhubConfig.headerTem}")
+    private String headerTem;
+
+    /**
+     * 登录页
+     * @return
+     */
     @GetMapping(value = "/login.html")
     public String getLogin() {
 
@@ -18,22 +50,27 @@ public class StaticController {
     }
 
     /**
-     * 进入后台管理运营平台首页
+     * 首页 此上添加列表
      * @return
      */
-    @GetMapping(value = "manager_index")
-    public String managerIndex(){
-        return "demo/index";
-    }
+    @GetMapping(value = "index.html")
+    public String getIndex(HttpSession session) {
 
-    /**
-     * 进入页面
-     * @param pageName
-     * @return
-     */
-    @GetMapping(value = "showThisHtml.html")
-    public String managerListKyc(@RequestParam String pageName){
-            return "/demo/"+pageName;
+        Object object = session.getAttribute(managerSession);
+        if (object == null) {
+            return "login";
+        }
+        ManagerUserDO managerUser = (ManagerUserDO)object;
+        //查询该用户的角色名
+        ManagerRoleDO roleDO = roleMapper.selectByPrimaryKey(managerUser.getRoleId());
+        // 存入module列表
+        List<ManagerModuleDO> modules = moduleMapper.listModuleByRoleId(managerUser.getRoleId());
+        Map<String, Object> data = ImmutableMap.of("roleName", roleDO == null ? "" : roleDO.getRoleName(),
+                "modules", modules);
+        Context context = new Context();
+        context.setVariables(data);
+        templateEngine.process(headerTem, context);
+        return "index";
     }
 
     /**
@@ -44,16 +81,6 @@ public class StaticController {
     public String userIdentity() {
 
         return "user/identity";
-    }
-
-    /**
-     * 首页
-     * @return
-     */
-    @GetMapping(value = "index.html")
-    public String getIndex() {
-
-        return "index";
     }
 
 }

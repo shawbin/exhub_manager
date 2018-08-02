@@ -27,6 +27,9 @@ spring:
       poolPreparedStatements: true
       maxPoolPreparedStatementPerConnectionSize: 20
 
+    thymeleaf:
+            prefix: classpath:/templates
+
 mybatis:
     mapperLocations: classpath:mapper/*.xml
     typeAliasesPackage: io.exhub.exhub_manager.pojo.DO
@@ -37,6 +40,8 @@ exhubConfig:
   managerSession: managerUser
   registerPoint: 100
   referrerPoint: 88
+  # 头部模板
+  headerTem: header
 
 logging:
   level:
