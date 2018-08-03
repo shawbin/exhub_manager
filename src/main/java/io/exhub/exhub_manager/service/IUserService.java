@@ -37,4 +37,11 @@ public interface IUserService {
      */
     ServerResponse postIdentityAuditId(Long id, Byte status, String message);
 
+    /**
+     * 查询身份认证记录数
+     * @param status
+     * @return
+     */
+    long countByExample(Byte status);
+
 }

@@ -6,9 +6,11 @@ import io.exhub.exhub_manager.mapper.ManagerRoleDOMapper;
 import io.exhub.exhub_manager.pojo.DO.ManagerModuleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerRoleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
+import io.exhub.exhub_manager.service.IBackstageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.TemplateEngine;
@@ -27,17 +29,14 @@ import java.util.Map;
 public class StaticController {
 
     @Autowired
-    private ManagerModuleDOMapper moduleMapper;
-    @Autowired
-    private ManagerRoleDOMapper roleMapper;
-
-    @Autowired
-    private TemplateEngine templateEngine;
+    private IBackstageService iBackstageService;
 
     @Value("${exhubConfig.managerSession}")
     private String managerSession;
     @Value("${exhubConfig.headerTem}")
     private String headerTem;
+    @Value("${exhubConfig.indexTem}")
+    private String index;
 
     /**
      * 登录页
@@ -54,22 +53,14 @@ public class StaticController {
      * @return
      */
     @GetMapping(value = "index.html")
-    public String getIndex(HttpSession session) {
+    public String getIndex(HttpSession session, ModelMap modelMap) {
 
         Object object = session.getAttribute(managerSession);
         if (object == null) {
             return "login";
         }
         ManagerUserDO managerUser = (ManagerUserDO)object;
-        //查询该用户的角色名
-        ManagerRoleDO roleDO = roleMapper.selectByPrimaryKey(managerUser.getRoleId());
-        // 存入module列表
-        List<ManagerModuleDO> modules = moduleMapper.listModuleByRoleId(managerUser.getRoleId());
-        Map<String, Object> data = ImmutableMap.of("roleName", roleDO == null ? "" : roleDO.getRoleName(),
-                "modules", modules);
-        Context context = new Context();
-        context.setVariables(data);
-        templateEngine.process(headerTem, context);
+        iBackstageService.getModulesMap(managerUser, modelMap);
         return "index";
     }
 

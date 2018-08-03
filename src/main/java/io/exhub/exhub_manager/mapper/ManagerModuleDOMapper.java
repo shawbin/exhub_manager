@@ -3,6 +3,7 @@ package io.exhub.exhub_manager.mapper;
 import io.exhub.exhub_manager.pojo.DO.ManagerModuleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerModuleDOExample;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface ManagerModuleDOMapper extends BaseMapper<ManagerModuleDO, Manag
      * @param roleId
      * @return
      */
-    List<ManagerModuleDO> listModuleByRoleId(Long roleId);
+    List<ManagerModuleDO> listModuleByRoleId(@Param(value = "roleId") Long roleId);
 }

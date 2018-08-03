@@ -28,7 +28,7 @@ spring:
       maxPoolPreparedStatementPerConnectionSize: 20
 
     thymeleaf:
-            prefix: classpath:/templates
+            prefix: classpath:templates/
 
 mybatis:
     mapperLocations: classpath:mapper/*.xml
@@ -39,9 +39,12 @@ mybatis:
 exhubConfig:
   managerSession: managerUser
   registerPoint: 100
+  peopleCount: 10000
+  extraPoint: 500
   referrerPoint: 88
   # 头部模板
   headerTem: header
+  indexTem: index
 
 logging:
   level:

@@ -300,12 +300,12 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="listModuleByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="listModuleByRoleId" resultMap="BaseResultMap">
     select
      *
      from
      t_manager_module tmm
      where
-     exists(select 0 from t_role_module trm where trm.role_id = 1 and trm.module_id = tmm.id)
+     exists(select 0 from t_role_module trm where trm.role_id = #{roleId} and trm.module_id = tmm.id)
   </select>
 </mapper>

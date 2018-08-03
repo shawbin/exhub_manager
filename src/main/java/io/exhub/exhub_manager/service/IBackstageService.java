@@ -3,6 +3,7 @@ package io.exhub.exhub_manager.service;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
+import org.springframework.ui.ModelMap;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -54,4 +55,10 @@ public interface IBackstageService {
      */
     List<LoginRecordDO> getLoginRecord(Long userId);
 
+    /**
+     * 获取角色模块列表
+     * @param managerUser
+     * @param modelMap
+     */
+    void getModulesMap(ManagerUserDO managerUser, ModelMap modelMap);
 }

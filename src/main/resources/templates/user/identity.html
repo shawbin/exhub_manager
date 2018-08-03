@@ -3,13 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>layout 后台大布局 - Layui</title>
     <link rel="stylesheet" href="../../static/css/style.css">
     <link rel="stylesheet" href="../../static/layui/css/layui.css">
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
-    <div th:include="common/header :: header"></div>
     <div class="layui-body">
         <!-- 提交表单 -->
         <form class="layui-form">
@@ -93,9 +91,9 @@
         <script type="text/html" id="createTimeTem">
             {{d.createTime}}
             {{#
-                var date = new Date();
-                date.setTime(d.createTime);
-                return date.format("yyyy-MM-dd hh:mm:ss");
+            var date = new Date();
+            date.setTime(d.createTime);
+            return date.format("yyyy-MM-dd hh:mm:ss");
             }}
         </script>
         <script type="text/html" id="idTypeTem">
@@ -114,10 +112,6 @@
             待审核
             {{#  } }}
         </script>
-    </div>
-    <div class="layui-footer">
-        <!-- 底部固定区域 -->
-        © exhub.io
     </div>
 </div>
 <script src="../../static/layui/layui.js"></script>
