@@ -72,15 +72,15 @@
         <table class="layui-table" lay-filter="identityList">
             <thead>
             <tr>
-                <th lay-data="{field:'id', width:60, fixed: 'left'}">用户编号</th>
-                <th lay-data="{field:'createTime', width:80, templet: '#createTimeTem'}">申请时间</th>
-                <th lay-data="{field:'fristName', width:80}">名</th>
-                <th lay-data="{field:'lastName', width:80}">姓</th>
-                <th lay-data="{field:'countryRegion', width:70}">国家/地区</th>
-                <th lay-data="{field:'idType', width:80, templet: '#idTypeTem'}">证件类型</th>
-                <th lay-data="{field:'idNumber', width:80}">证件号码</th>
-                <th lay-data="{field:'status', width:80, templet: '#statusTem'}">实名状态</th>
-                <th lay-data="{field:'message', width:80, fixed: 'right'}">拒绝理由</th>
+                <th lay-data="{field:'id', width:100, fixed: 'left'}">用户编号</th>
+                <th lay-data="{field:'createTime', width:200, templet: '#createTimeTem'}">申请时间</th>
+                <th lay-data="{field:'fristName', width:100}">名</th>
+                <th lay-data="{field:'lastName', width:100}">姓</th>
+                <th lay-data="{field:'countryRegion', width:100}">国家/地区</th>
+                <th lay-data="{field:'idType', width:100, templet: '#idTypeTem'}">证件类型</th>
+                <th lay-data="{field:'idNumber', width:200}">证件号码</th>
+                <th lay-data="{field:'status', width:100, templet: '#statusTem'}">实名状态</th>
+                <th lay-data="{field:'message', width:100, fixed: 'right'}">拒绝理由</th>
                 <th lay-data="{width:100, align:'center', toolbar: '#barDemo', align:'center', fixed: 'right'}">操作</th>
             </tr>
             </thead>
@@ -164,7 +164,7 @@
         //加载列表的后端 url
         var getListUrl = '/user/identity/authentication';
         var tableOptions = {
-            width: 892,
+            width: 1300,
             height: 332,
             url: getListUrl, //请求地址
             method: 'POST', //方式

@@ -315,4 +315,18 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+ <!-- <resultMap id="UserRoleMap" type="java.util.Map">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="roleName" jdbcType="VARCHAR" property="roleName" />
+  </resultMap>-->
+  <select id="listManagerUser" resultType="java.util.Map">
+    select
+      tmu.id id, tmu.username username, tmr.role_name roleName
+    from
+      t_manager_user tmu, t_manager_role tmr
+    where
+      tmu.status = 1 and tmr.id = tmu.role_id
+    order by tmu.create_time desc
+  </select>
 </mapper>

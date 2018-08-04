@@ -1,9 +1,5 @@
 package io.exhub.exhub_manager.controller;
 
-import com.google.common.collect.ImmutableMap;
-import io.exhub.exhub_manager.mapper.ManagerModuleDOMapper;
-import io.exhub.exhub_manager.mapper.ManagerRoleDOMapper;
-import io.exhub.exhub_manager.pojo.DO.ManagerModuleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerRoleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
 import io.exhub.exhub_manager.service.IBackstageService;
@@ -12,14 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author
@@ -52,7 +43,7 @@ public class StaticController {
      * 首页 此上添加列表
      * @return
      */
-    @GetMapping(value = "index.html")
+    @GetMapping(value = "/index.html")
     public String getIndex(HttpSession session, ModelMap modelMap) {
 
         Object object = session.getAttribute(managerSession);
@@ -68,10 +59,36 @@ public class StaticController {
      * 用户管理-kyc
      * @return
      */
-    @GetMapping(value = "user/identity.html")
+    @GetMapping(value = "/user/identity.html")
     public String userIdentity() {
 
         return "user/identity";
     }
+
+    /**
+     * 后台管理-账号管理
+     * @return
+     */
+    @GetMapping(value = "/backstage/account.html")
+    public String getBackstageAccount() {
+
+        return "backstage/account";
+    }
+
+    /**
+     * 新增或编辑账号
+     * @return
+     */
+    @GetMapping(value = "/backstage/account/edit.html")
+    public String getBackstageAccountEdit(Long id, ModelMap modelMap) {
+
+        //发送角色列表到页面
+        iBackstageService.getBackstageAccountEdit(id, modelMap);
+        return "backstage/account-edit";
+    }
+
+    //交易管理
+
+    //内容管理
 
 }

@@ -1,6 +1,5 @@
 package io.exhub.exhub_manager.service.impl;
 
-import com.google.common.collect.ImmutableMap;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.mapper.LoginRecordDOMapper;
@@ -76,6 +75,7 @@ public class BackstageServiceImpl implements IBackstageService {
         ManagerUserDOExample example = new ManagerUserDOExample();
         ManagerUserDOExample.Criteria criteria = example.createCriteria();
         criteria.andUsernameEqualTo(username);
+        criteria.andStatusEqualTo(ManagerUserDO.USE);
         List<ManagerUserDO> list = managerUserMapper.selectByExample(example);
         if (list.isEmpty()) {
             return null;
@@ -164,6 +164,65 @@ public class BackstageServiceImpl implements IBackstageService {
 
         modelMap.put("roleName", roleDO == null ? "" : roleDO.getRoleName());
         modelMap.put("moduleList", moduleList);
+    }
+
+    /**
+     * 获取账号列表
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getManagerUserList() {
+
+        List<Map<String, Object>> data = managerUserMapper.listManagerUser();
+        return data;
+    }
+
+    /**
+     * 删除后台账号
+     * @param id
+     * @return
+     */
+    @Override
+    public ServerResponse deleteManagerAccount(Long id) {
+
+        ManagerUserDO managerUser = new ManagerUserDO();
+        managerUser.setId(id);
+        managerUser.setStatus(ManagerUserDO.UN_USE);
+        managerUserMapper.updateByPrimaryKeySelective(managerUser);
+        return ServerResponse.createBySuccess();
+    }
+
+    /**
+     * 获取角色列表
+     * @return
+     */
+    @Override
+    public List<ManagerRoleDO> listRole() {
+
+        ManagerRoleDOExample example = new ManagerRoleDOExample();
+        ManagerRoleDOExample.Criteria criteria = example.createCriteria();
+        criteria.andStatusEqualTo(true);
+        List<ManagerRoleDO> managerRoleDOS = roleMapper.selectByExample(example);
+        return managerRoleDOS;
+    }
+
+    /**
+     * 发送角色列表到页面
+     * @param id
+     * @param modelMap
+     */
+    @Override
+    public void getBackstageAccountEdit(Long id, ModelMap modelMap) {
+
+        //获取角色列表
+        List<ManagerRoleDO> roleList = listRole();
+        modelMap.put("roleList", roleList);
+        if (id == null) {
+            modelMap.put("username", null);
+        }
+        //查询该用户
+        ManagerUserDO user = managerUserMapper.selectByPrimaryKey(id);
+        modelMap.put("username", user == null ? null : user.getUsername());
     }
 
 

@@ -29,6 +29,11 @@ public class UserController {
     @Autowired
     private IUserService iUserService;
 
+    /**
+     * 身份认证审核申请记录
+     * @param params
+     * @return
+     */
     @ResponseBody
     @PostMapping(value = "/identity/authentication", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> postIdentityAuthentication(@RequestBody Map<String, Object> params) {

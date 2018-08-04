@@ -58,23 +58,6 @@ public class BackstageController {
     }
 
     /**
-     * 分配账号
-     * @param params
-     * @return
-     */
-    @PostMapping(value = "/assigned/account/{role}")
-    @ResponseBody
-    public ServerResponse postAssignedAccount(@PathVariable Long role, @RequestBody Map<String, String> params) {
-
-        String username = params.get("username");
-        String password = params.get("password");
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.PARAMETER_ERROR.getCode(), ResponseCode.PARAMETER_ERROR.getDesc());
-        }
-        return iBackstageService.postAssignedAccount(role, username, password);
-    }
-
-    /**
      * 用户退出
      * @param session
      */
@@ -84,7 +67,26 @@ public class BackstageController {
         if (session != null) {
             session.invalidate();
         }
-        return "redirect:login";
+        return "redirect:/templates/login.html";
+    }
+
+    /**
+     * 账号列表
+     * @param page
+     * @param limit
+     * @return
+     */
+    @GetMapping(value = "/manager_user/list")
+    @ResponseBody
+    public Map<String, Object> getManagerUserList(Integer page, Integer limit) {
+
+        Page<Object> pageHelper = PageHelper.startPage(page, limit, true);
+        List<Map<String, Object>> managerUserList = iBackstageService.getManagerUserList();
+        Map<String, Object> data = ImmutableMap.of("count", pageHelper.getTotal(),
+                "data", managerUserList,
+                "msg", "",
+                "code", 0);
+        return data;
     }
 
     /**
@@ -102,4 +104,34 @@ public class BackstageController {
                 "loginRecordList", loginRecordList);
         return ServerResponse.createBySuccess(data);
     }
+
+    /**
+     * 分配账号
+     * @param params
+     * @return
+     */
+    @PostMapping(value = "/assigned/account/{role}")
+    @ResponseBody
+    public ServerResponse postAssignedAccount(@PathVariable Long role, @RequestBody Map<String, String> params) {
+
+        String username = params.get("username");
+        String password = params.get("password");
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.PARAMETER_ERROR.getCode(), ResponseCode.PARAMETER_ERROR.getDesc());
+        }
+        return iBackstageService.postAssignedAccount(role, username, password);
+    }
+
+    /**
+     * 删除后台账号
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @DeleteMapping(value = "/manager/account/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServerResponse deleteManagerAccount(@PathVariable(value = "user_id") Long id) {
+
+        return iBackstageService.deleteManagerAccount(id);
+    }
+
 }
