@@ -42,9 +42,6 @@ exhubConfig:
   peopleCount: 10000
   extraPoint: 500
   referrerPoint: 88
-  # 头部模板
-  headerTem: header
-  indexTem: index
 
 logging:
   level:

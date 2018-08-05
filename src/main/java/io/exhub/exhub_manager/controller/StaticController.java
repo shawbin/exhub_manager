@@ -1,6 +1,5 @@
 package io.exhub.exhub_manager.controller;
 
-import io.exhub.exhub_manager.pojo.DO.ManagerRoleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
 import io.exhub.exhub_manager.service.IBackstageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * @author
@@ -24,10 +22,6 @@ public class StaticController {
 
     @Value("${exhubConfig.managerSession}")
     private String managerSession;
-    @Value("${exhubConfig.headerTem}")
-    private String headerTem;
-    @Value("${exhubConfig.indexTem}")
-    private String index;
 
     /**
      * 登录页
