@@ -87,6 +87,16 @@ public class StaticController {
         return "backstage/account-edit";
     }
 
+    /**
+     * 后台管理-密码管理
+     * @return
+     */
+    @GetMapping(value = "/backstage/password.html")
+    public String getBackstagePassword() {
+
+        return "backstage/password";
+    }
+
     //交易管理
 
     //内容管理

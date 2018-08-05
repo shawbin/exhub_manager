@@ -87,6 +87,7 @@
                     });
                 } else if(layEvent === 'edit'){
                     layer.msg('ID：' + data.id + ' 的编辑操作');
+                    window.location.href = '/backstage/account/edit.html?id=' + data.id;
                 }
             });
             //表初始化
@@ -94,7 +95,7 @@
         });
     })();
     function insertAccount() {
-        window.location.href = '';
+        window.location.href = '/backstage/account/edit.html';
     }
 
 </script>

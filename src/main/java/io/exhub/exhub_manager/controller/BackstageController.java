@@ -6,8 +6,10 @@ import com.google.common.collect.ImmutableMap;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
+import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
 import io.exhub.exhub_manager.service.IBackstageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -28,6 +30,9 @@ public class BackstageController {
 
     @Autowired
     private IBackstageService iBackstageService;
+
+    @Value("${exhubConfig.managerSession}")
+    private String managerSession;
 
     /**
      * 登录
@@ -132,6 +137,28 @@ public class BackstageController {
     public ServerResponse deleteManagerAccount(@PathVariable(value = "user_id") Long id) {
 
         return iBackstageService.deleteManagerAccount(id);
+    }
+
+    /**
+     * 密码管理-修改密码
+     * @param session
+     * @return
+     */
+    @ResponseBody
+    @PutMapping(value = "/account/password", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServerResponse putAccountPassword(HttpSession session, @RequestBody Map<String, String> params) {
+
+        Object object = session.getAttribute(managerSession);
+        if (object == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.SESSION_VERIFY_FAILURE.getCode(), ResponseCode.SESSION_VERIFY_FAILURE.getDesc());
+        }
+        String password = params.get("password");
+        String resetPassword = params.get("resetPassword");
+        if (StringUtils.isEmpty(password) || StringUtils.isEmpty(resetPassword)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.PARAMETER_ERROR.getCode(), ResponseCode.PARAMETER_ERROR.getDesc());
+        }
+        ManagerUserDO managerUserDO = (ManagerUserDO) object;
+        return iBackstageService.putAccountPassword(managerUserDO, password, resetPassword);
     }
 
 }

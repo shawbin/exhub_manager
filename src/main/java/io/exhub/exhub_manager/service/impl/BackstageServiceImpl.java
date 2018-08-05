@@ -108,12 +108,20 @@ public class BackstageServiceImpl implements IBackstageService {
     @Override
     public ServerResponse postAssignedAccount(Long role, String username, String password) {
 
+        //获取manager_user
+        ManagerUserDO managerUserDO = getManagerUserByUsername(username);
         ManagerUserDO managerUser = new ManagerUserDO();
         managerUser.setUsername(username);
         managerUser.setPassword(password);
         managerUser.setRoleId(role);
-        //保存t_manager_user
-        managerUserMapper.insertSelective(managerUser);
+        if (managerUserDO == null) {
+            //插入用户
+            managerUserMapper.insertSelective(managerUser);
+        }else {
+            //更新用户
+            managerUser.setId(managerUserDO.getId());
+            managerUserMapper.updateByPrimaryKeySelective(managerUser);
+        }
         return ServerResponse.createBySuccess();
     }
 
@@ -219,11 +227,33 @@ public class BackstageServiceImpl implements IBackstageService {
         modelMap.put("roleList", roleList);
         if (id == null) {
             modelMap.put("username", null);
+        }else {
+            //查询该用户
+            ManagerUserDO user = managerUserMapper.selectByPrimaryKey(id);
+            modelMap.put("username", user == null ? null : user.getUsername());
         }
-        //查询该用户
-        ManagerUserDO user = managerUserMapper.selectByPrimaryKey(id);
-        modelMap.put("username", user == null ? null : user.getUsername());
     }
 
+    /**
+     * 密码管理-修改密码
+     * @param managerUser
+     * @param password
+     * @param resetPassword
+     * @return
+     */
+    @Override
+    public ServerResponse putAccountPassword(ManagerUserDO managerUser, String password, String resetPassword) {
+
+        //判断密码是否正确
+        if (!StringUtils.equals(managerUser.getPassword(), password)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.PASSWORD_ERROR.getCode(), ResponseCode.PASSWORD_ERROR.getDesc());
+        }
+        //更新密码
+        ManagerUserDO user = new ManagerUserDO();
+        user.setId(managerUser.getId());
+        user.setPassword(resetPassword);
+        managerUserMapper.updateByPrimaryKeySelective(user);
+        return ServerResponse.createBySuccess();
+    }
 
 }

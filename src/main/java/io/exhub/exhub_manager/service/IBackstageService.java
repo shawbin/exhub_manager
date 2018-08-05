@@ -89,4 +89,13 @@ public interface IBackstageService {
      * @param modelMap
      */
     void getBackstageAccountEdit(Long id, ModelMap modelMap);
+
+    /**
+     * 密码管理-修改密码
+     * @param managerUser
+     * @param password
+     * @param resetPassword
+     * @return
+     */
+    ServerResponse putAccountPassword(ManagerUserDO managerUser, String password, String resetPassword);
 }
