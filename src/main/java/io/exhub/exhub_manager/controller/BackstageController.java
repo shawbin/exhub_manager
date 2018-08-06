@@ -95,22 +95,6 @@ public class BackstageController {
     }
 
     /**
-     * 获取登录记录
-     * @date 2018/7/25
-     */
-    @GetMapping(value = "/{user_id}/login/record")
-    public ServerResponse getLoginRecord(@PathVariable(value = "user_id") Long userId,
-                                         @RequestParam Integer pageNum,
-                                         @RequestParam Integer pageSize) {
-
-        Page<Object> page = PageHelper.startPage(pageNum, pageSize);
-        List<LoginRecordDO> loginRecordList = iBackstageService.getLoginRecord(userId);
-        Map<String, Object> data = ImmutableMap.of("total", page.getTotal(),
-                "loginRecordList", loginRecordList);
-        return ServerResponse.createBySuccess(data);
-    }
-
-    /**
      * 分配账号
      * @param params
      * @return

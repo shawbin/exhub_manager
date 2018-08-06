@@ -414,4 +414,21 @@
     select <include refid="Base_Column_List" /> from user
     where wallet->'$.${assetName}' = #{address}
   </select>
+  <select id="listUserDO" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      user
+    where 1 = 1
+    <if test="params.userId != null and params.userId != ''">
+      and user_Id = #{params.userId}
+    </if>
+    <if test="params.username != null and params.username != ''">
+      and username = #{params.username}
+    </if>
+    <if test="params.startTime != null and params.startTime != '' and params.endTime != null and params.endTime != ''">
+      and create_time between #{params.startTime} and #{params.endTime}
+    </if>
+    order by user_Id desc
+  </select>
 </mapper>

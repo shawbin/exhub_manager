@@ -1,12 +1,15 @@
 package io.exhub.exhub_manager.service.impl;
 
+import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.mapper.IdentityAuthenticationDOMapper;
+import io.exhub.exhub_manager.mapper.LoginRecordDOMapper;
 import io.exhub.exhub_manager.mapper.PointRecordDOMapper;
-import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDO;
-import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDOExample;
-import io.exhub.exhub_manager.pojo.DO.PointRecordDO;
+import io.exhub.exhub_manager.mapper.UserDOMapper;
+import io.exhub.exhub_manager.pojo.DO.*;
+import io.exhub.exhub_manager.service.IMailService;
 import io.exhub.exhub_manager.service.IUserService;
+import io.exhub.exhub_manager.util.GoogleAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,9 +27,16 @@ import java.util.Map;
 public class UserServiceImpl implements IUserService{
 
     @Autowired
+    private IMailService iMailService;
+
+    @Autowired
     private IdentityAuthenticationDOMapper identityMapper;
     @Autowired
     private PointRecordDOMapper pointMapper;
+    @Autowired
+    private UserDOMapper userMapper;
+    @Autowired
+    private LoginRecordDOMapper loginRecordMapper;
 
     @Value("${exhubConfig.registerPoint}")
     private Long registerPoint;
@@ -78,6 +88,8 @@ public class UserServiceImpl implements IUserService{
             identity.setStatus(status);
             identity.setMessage(message);
             identityMapper.updateByPrimaryKeySelective(identity);
+            //获取用户信息
+            UserDO userDO = userMapper.selectByPrimaryKey(identityDO.getUserId());
             //身份审核成功 加积分
             if (status.equals(IdentityAuthenticationDO.ADUIT_PASS)) {
                 //更新注册积分记录
@@ -92,6 +104,11 @@ public class UserServiceImpl implements IUserService{
                 updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint);
                 //更新被推荐记录
                 updatePoint(identityDO.getUserId(), PointRecordDO.REFFER, referrerPoint);
+                //异步发送审核成功邮箱
+                iMailService.identityAuthSuccess(userDO.getUsername());
+            }else {
+                //异步发送审核失败邮箱
+                iMailService.identityAuthFail(userDO.getUsername());
             }
         }
         return ServerResponse.createBySuccess();
@@ -109,6 +126,74 @@ public class UserServiceImpl implements IUserService{
         IdentityAuthenticationDOExample.Criteria criteria = example.createCriteria();
         criteria.andStatusEqualTo(status);
         return identityMapper.countByExample(example);
+    }
+
+    /**
+     * bilala用户列表
+     * @param params
+     * @return
+     */
+    @Override
+    public List<UserDO> postList(Map<String, Object> params) {
+
+        return userMapper.listUserDO(params);
+    }
+
+    /**
+     * 获取登录记录
+     * @return
+     * @param //userId
+     */
+    @Override
+    public List<LoginRecordDO> getLoginRecord(Long userId) {
+
+        LoginRecordDOExample example = new LoginRecordDOExample();
+        example.setOrderByClause("id desc");
+        LoginRecordDOExample.Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        return loginRecordMapper.selectByExample(example);
+    }
+
+    /**
+     * 关闭/开启google验证
+     * @param userId
+     * @param flag true 开启 false 关闭
+     * @return
+     */
+    @Override
+    public ServerResponse putGoogleAuth(Long userId, boolean flag) {
+
+        UserDO userDO = userMapper.selectByPrimaryKey(userId);
+        if (userDO == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ACCOUNT_NOT_EXIST.getCode(), ResponseCode.ACCOUNT_NOT_EXIST.getDesc());
+        }
+        userDO = new UserDO();
+        userDO.setUserId(userId);
+        userDO.setGoogleValidateCodeFlag(flag);
+        //重新设置googleAuth
+        userDO.setGoogleValidateCode(GoogleAuth.getGoogleKey());
+        userMapper.updateByPrimaryKeySelective(userDO);
+        return ServerResponse.createBySuccess();
+    }
+
+    /**
+     * 冻结/解冻账户
+     * @param userId
+     * @param status
+     * @return
+     */
+    @Override
+    public ServerResponse putAccountStatus(Long userId, boolean status) {
+
+        UserDO userDO = userMapper.selectByPrimaryKey(userId);
+        if (userDO == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ACCOUNT_NOT_EXIST.getCode(), ResponseCode.ACCOUNT_NOT_EXIST.getDesc());
+        }
+        userDO = new UserDO();
+        userDO.setUserId(userId);
+        userDO.setStatus(status);
+        userMapper.updateByPrimaryKeySelective(userDO);
+        return ServerResponse.createBySuccess();
     }
 
     /**

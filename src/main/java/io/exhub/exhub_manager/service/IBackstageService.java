@@ -48,15 +48,6 @@ public interface IBackstageService {
      */
     ServerResponse postAssignedAccount(Long role, String username, String password);
 
-
-
-    /**
-     * 获取登录记录
-     * @return
-     * @param //userId
-     */
-    List<LoginRecordDO> getLoginRecord(Long userId);
-
     /**
      * 获取角色模块列表
      * @param managerUser

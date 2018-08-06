@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 @Mapper
 @Component
 public interface UserDOMapper extends BaseMapper<UserDO, UserDOExample>{
@@ -18,4 +21,11 @@ public interface UserDOMapper extends BaseMapper<UserDO, UserDOExample>{
      */
     UserDO getOneByAssetNameAndAddress(@Param("assetName") String assetName,
                                        @Param("address") String address);
+
+    /**
+     * bilala用户列表
+     * @param params
+     * @return
+     */
+    List<UserDO> listUserDO(@Param(value = "params") Map<String, Object> params);
 }

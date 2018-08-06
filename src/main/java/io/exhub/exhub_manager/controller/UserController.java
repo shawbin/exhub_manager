@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
 import io.exhub.exhub_manager.pojo.DO.IdentityAuthenticationDO;
+import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
+import io.exhub.exhub_manager.pojo.DO.UserDO;
 import io.exhub.exhub_manager.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -77,4 +79,73 @@ public class UserController {
         String message = String.valueOf(messageObj);
         return iUserService.postIdentityAuditId(id, status, message);
     }
+
+    /**
+     * bilala用户列表
+     * @param params
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "/list")
+    public Map<String, Object> postList(@RequestBody Map<String, Object> params) {
+
+        Object page = params.get("page");
+        Object limit = params.get("limit");
+        //分页
+        Page<Object> pageHelper = PageHelper.startPage(Integer.parseInt(String.valueOf(page)), Integer.parseInt(String.valueOf(limit)), true);
+        List<UserDO> userDOS = iUserService.postList(params);
+        Map<String, Object> data = ImmutableMap.of("count", pageHelper.getTotal(),
+                "data", userDOS,
+                "msg", "",
+                "code", 0);
+        return data;
+    }
+
+    /**
+     * 获取登录记录
+     * @date 2018/7/25
+     */
+    @ResponseBody
+    @GetMapping(value = "/{user_id}/login/record")
+    public Map<String, Object> getLoginRecord(@PathVariable(value = "user_id") Long userId,
+                                              @RequestParam Integer page,
+                                              @RequestParam Integer limit) {
+
+        Page<Object> pageHelper = PageHelper.startPage(page, limit);
+        List<LoginRecordDO> loginRecordList = iUserService.getLoginRecord(userId);
+        Map<String, Object> data = ImmutableMap.of("count", pageHelper.getTotal(),
+                "data", loginRecordList,
+                "code", 0,
+                "msg", "");
+        return data;
+    }
+
+    /**
+     * 关闭/开启google验证
+     * @param userId
+     * @param flag true 开启 false 关闭
+     * @return
+     */
+    @ResponseBody
+    @PutMapping(value = "/google/auth/{user_id}/{flag}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServerResponse putGoogleAuth(@PathVariable(value = "user_id") Long userId,
+                                        @PathVariable(value = "flag") boolean flag) {
+
+        return iUserService.putGoogleAuth(userId, flag);
+    }
+
+    /**
+     * 冻结/解冻账户
+     * @param userId
+     * @param status
+     * @return
+     */
+    @ResponseBody
+    @PutMapping(value = "/account/{user_id}/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServerResponse putAccountStatus(@PathVariable(value = "user_id") Long userId,
+                                           @PathVariable(value = "status") boolean status) {
+
+        return iUserService.putAccountStatus(userId, status);
+    }
+
 }

@@ -2,7 +2,6 @@ package io.exhub.exhub_manager.service.impl;
 
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
-import io.exhub.exhub_manager.mapper.LoginRecordDOMapper;
 import io.exhub.exhub_manager.mapper.ManagerModuleDOMapper;
 import io.exhub.exhub_manager.mapper.ManagerRoleDOMapper;
 import io.exhub.exhub_manager.mapper.ManagerUserDOMapper;
@@ -27,8 +26,6 @@ import java.util.Map;
 @Service
 public class BackstageServiceImpl implements IBackstageService {
 
-    @Autowired
-    private LoginRecordDOMapper loginRecordMapper;
     @Autowired
     private ManagerUserDOMapper managerUserMapper;
     @Autowired
@@ -123,21 +120,6 @@ public class BackstageServiceImpl implements IBackstageService {
             managerUserMapper.updateByPrimaryKeySelective(managerUser);
         }
         return ServerResponse.createBySuccess();
-    }
-
-    /**
-     * 获取登录记录
-     * @return
-     * @param //userId
-     */
-    @Override
-    public List<LoginRecordDO> getLoginRecord(Long userId) {
-
-        LoginRecordDOExample example = new LoginRecordDOExample();
-        example.setOrderByClause("id desc");
-        LoginRecordDOExample.Criteria criteria = example.createCriteria();
-        criteria.andUserIdEqualTo(userId);
-        return loginRecordMapper.selectByExample(example);
     }
 
     /**

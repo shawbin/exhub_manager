@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 
 /**
  * @author
@@ -54,9 +55,30 @@ public class StaticController {
      * @return
      */
     @GetMapping(value = "/user/identity.html")
-    public String userIdentity() {
+    public String getUserIdentity() {
 
         return "user/identity";
+    }
+
+    /**
+     * 用户管理-bilala用户管理
+     * @return
+     */
+    @GetMapping(value = "/user/bilala.html")
+    public String getUserBilala() {
+
+        return "user/bilala";
+    }
+
+    /**
+     * 用户管理-登录历史
+     * @return
+     */
+    @GetMapping(value = "/user/login-record.html")
+    public String getUserLoginRecord(@PathParam(value = "userId") Long userId, ModelMap modelMap) {
+
+        modelMap.put("userId", userId);
+        return "user/login-record";
     }
 
     /**

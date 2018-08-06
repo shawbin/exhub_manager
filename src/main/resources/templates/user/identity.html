@@ -151,8 +151,8 @@
             fristName: ''
             , lastName: ''
             , countryRegion: ''
-            , startTime: ''
-            , endTime: ''
+            , startTime: new Date().monthStartFormat("yyyy-MM-dd")
+            , endTime: new Date().format("yyyy-MM-dd")
             , idType: ''
             , idNumber: ''
             , status: ''
@@ -180,16 +180,12 @@
                 dataName: 'data' //数据字段
             }
         };
-
-        //
         layui.use(['table', 'layer'], function () {//layui 模块引用，根据需要自行修改
             var layer = layui.layer, table = layui.table;
-
             //表初始化
             var createTable = function () {
                 table.init('identityList', tableOptions);
             };
-
             //监听工具条
             table.on('tool(identityList)', function (obj) {
                 var data = obj.data;
@@ -199,22 +195,8 @@
                     window.location.href = '/user/identity/' + data.id;
                 }
             });
-
-            //表刷新方法
-            var reloadTable = function (item) {
-                table.reload("identityList", { //此处是上文提到的 初始化标识id
-                    where: {
-                        //key: { //该写法上文已经提到
-                        type: item.type, id: item.id
-                        //}
-                    }
-                });
-            };
-
             //表初始化
             createTable();
-
-            //其他和 tree 相关的方法，其中包括 点击 tree 项调用刷新方法
         });
     }
 </script>
