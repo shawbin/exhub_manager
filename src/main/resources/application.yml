@@ -45,9 +45,9 @@ exhubConfig:
   # 发送者邮箱
   fromEmail: Bilala<info@bilala.io>
   # 身份认证通过通知
-  identityAuthSuccess: identity-auth-success
+  identityAuthSuccess: email/identity-auth-success
   # 身份认证失败通知
-  identityAuthFail: identity-auth-fail
+  identityAuthFail: email/identity-auth-fail
 
 logging:
   level:
