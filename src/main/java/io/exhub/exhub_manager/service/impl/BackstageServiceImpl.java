@@ -6,11 +6,13 @@ import io.exhub.exhub_manager.mapper.ManagerModuleDOMapper;
 import io.exhub.exhub_manager.mapper.ManagerRoleDOMapper;
 import io.exhub.exhub_manager.mapper.ManagerUserDOMapper;
 import io.exhub.exhub_manager.pojo.DO.*;
+import io.exhub.exhub_manager.pojo.DTO.RoleModuleDTO;
 import io.exhub.exhub_manager.service.IBackstageService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 
 import javax.servlet.http.HttpSession;
@@ -124,18 +126,18 @@ public class BackstageServiceImpl implements IBackstageService {
 
     /**
      * 获取角色模块列表
-     * @param managerUser
+     * @param roleId
      * @param modelMap
      */
     @Override
-    public void getModulesMap(ManagerUserDO managerUser, ModelMap modelMap) {
+    public void getModulesMap(Long roleId, ModelMap modelMap) {
 
         //查询该用户的角色名
-        ManagerRoleDO roleDO = roleMapper.selectByPrimaryKey(managerUser.getRoleId());
+        ManagerRoleDO roleDO = roleMapper.selectByPrimaryKey(roleId);
         //包装modulelist
         List<Map<String, Object>> moduleList = new ArrayList<>();
         // 获取module列表
-        List<ManagerModuleDO> modules = moduleMapper.listModuleByRoleId(managerUser.getRoleId());
+        List<ManagerModuleDO> modules = moduleMapper.listModuleByRoleId(roleId);
         modules.forEach(module -> {
             //查询得到module父列表
             Map<String, Object> moduleMap = new HashMap<>(1<<4);
@@ -151,7 +153,6 @@ public class BackstageServiceImpl implements IBackstageService {
                 moduleList.add(moduleMap);
             }
         });
-
         modelMap.put("roleName", roleDO == null ? "" : roleDO.getRoleName());
         modelMap.put("moduleList", moduleList);
     }
@@ -190,6 +191,7 @@ public class BackstageServiceImpl implements IBackstageService {
     public List<ManagerRoleDO> listRole() {
 
         ManagerRoleDOExample example = new ManagerRoleDOExample();
+        example.setOrderByClause("id desc");
         ManagerRoleDOExample.Criteria criteria = example.createCriteria();
         criteria.andStatusEqualTo(true);
         List<ManagerRoleDO> managerRoleDOS = roleMapper.selectByExample(example);
@@ -236,6 +238,69 @@ public class BackstageServiceImpl implements IBackstageService {
         user.setPassword(resetPassword);
         managerUserMapper.updateByPrimaryKeySelective(user);
         return ServerResponse.createBySuccess();
+    }
+
+    /**
+     * 删除角色
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean deleteRoleById(Long id) {
+
+        ManagerRoleDO roleDO = new ManagerRoleDO();
+        roleDO.setId(id);
+        roleDO.setStatus(false);
+        int result = roleMapper.updateByPrimaryKeySelective(roleDO);
+        if (result > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 角色模块绑定页
+     * @param roleId
+     * @param modelMap
+     */
+    @Override
+    public void getBackstageRoleModule(Long roleId, ModelMap modelMap) {
+
+        // 查询该用户的角色名
+        ManagerRoleDO roleDO = roleMapper.selectByPrimaryKey(roleId);
+        // 获取module列表
+        List<ManagerModuleDO> modules = moduleMapper.listModuleByRoleId(roleId);
+        // 抽取id
+        List<Long> ids = new ArrayList<>();
+        modules.forEach(module -> {
+            ids.add(module.getId());
+        });
+        modelMap.put("roleId", roleId);
+        modelMap.put("roleName", roleDO == null ? "" : roleDO.getRoleName());
+        modelMap.put("ids", ids);
+    }
+
+    /**
+     * 更新/添加角色及其对应的模块
+     * @param roleModuleDTO
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ServerResponse postRoleModule(RoleModuleDTO roleModuleDTO) {
+
+        //roleId为空，添加角色
+        if (roleModuleDTO.getRoleId() == null) {
+            //插入角色
+            ManagerRoleDO roleDO = new ManagerRoleDO();
+            roleDO.setRoleName(roleModuleDTO.getRoleName());
+            roleMapper.insertSelective(roleDO);
+            //批量插入角色绑定模块
+
+        }else {
+            //修改角色
+        }
+        return null;
     }
 
 }

@@ -5,8 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.ImmutableMap;
 import io.exhub.exhub_manager.common.ResponseCode;
 import io.exhub.exhub_manager.common.ServerResponse;
-import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
+import io.exhub.exhub_manager.pojo.DO.ManagerRoleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
+import io.exhub.exhub_manager.pojo.DTO.RoleModuleDTO;
 import io.exhub.exhub_manager.service.IBackstageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -143,6 +144,53 @@ public class BackstageController {
         }
         ManagerUserDO managerUserDO = (ManagerUserDO) object;
         return iBackstageService.putAccountPassword(managerUserDO, password, resetPassword);
+    }
+
+    /**
+     * 后台管理-角色列表
+     * @param page
+     * @param limit
+     * @return
+     */
+    @ResponseBody
+    @GetMapping(value = "/role/list")
+    public Map<String, Object> getRoleList(Integer page, Integer limit) {
+
+        //分页
+        Page<Object> pageHelper = PageHelper.startPage(page, limit, true);
+        List<ManagerRoleDO> roleDOS = iBackstageService.listRole();
+        Map<String, Object> data = ImmutableMap.of("count", pageHelper.getTotal(),
+                "code", 0,
+                "data", roleDOS,
+                "msg", "");
+        return data;
+    }
+
+    /**
+     * 删除角色
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @DeleteMapping(value = "/role/{role_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ServerResponse deleteRole(@PathVariable(value = "role_id") Long id){
+
+        boolean flag = iBackstageService.deleteRoleById(id);
+        if (flag) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByErrorCodeMessage(ResponseCode.NO_DATA.getCode(), ResponseCode.NO_DATA.getDesc());
+    }
+
+    /**
+     * 更新/添加角色及其对应的模块
+     * @return
+     */
+    @ResponseBody
+    @PostMapping(value = "role/module")
+    public ServerResponse postRoleModule(@RequestBody RoleModuleDTO roleModuleDTO) {
+
+        return iBackstageService.postRoleModule(roleModuleDTO);
     }
 
 }

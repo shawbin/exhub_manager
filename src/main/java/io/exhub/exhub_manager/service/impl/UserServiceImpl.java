@@ -101,7 +101,6 @@ public class UserServiceImpl implements IUserService{
                 }else {
                     updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint + extraPoint);
                 }
-                updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint);
                 //更新被推荐记录
                 updatePoint(identityDO.getUserId(), PointRecordDO.REFFER, referrerPoint);
                 //异步发送审核成功邮箱

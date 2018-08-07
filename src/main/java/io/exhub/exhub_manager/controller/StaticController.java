@@ -46,7 +46,7 @@ public class StaticController {
             return "login";
         }
         ManagerUserDO managerUser = (ManagerUserDO)object;
-        iBackstageService.getModulesMap(managerUser, modelMap);
+        iBackstageService.getModulesMap(managerUser.getRoleId(), modelMap);
         return "index";
     }
 
@@ -111,6 +111,29 @@ public class StaticController {
     public String getBackstagePassword() {
 
         return "backstage/password";
+    }
+
+    /**
+     * 后台管理-角色管理
+     * @return
+     */
+    @GetMapping(value = "/backstage/role.html")
+    public String getBackstageRole() {
+
+        return "backstage/role";
+    }
+
+    /**
+     * 角色模块绑定页
+     * @return
+     */
+    @GetMapping(value = "/backstage/role-module.html")
+    public String getBackstageRoleModule(Long roleId, ModelMap modelMap) {
+
+        if (roleId != null) {
+            iBackstageService.getBackstageRoleModule(roleId, modelMap);
+        }
+        return "backstage/role-module";
     }
 
     //交易管理

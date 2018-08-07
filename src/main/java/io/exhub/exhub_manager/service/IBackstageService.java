@@ -1,9 +1,9 @@
 package io.exhub.exhub_manager.service;
 
 import io.exhub.exhub_manager.common.ServerResponse;
-import io.exhub.exhub_manager.pojo.DO.LoginRecordDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerRoleDO;
 import io.exhub.exhub_manager.pojo.DO.ManagerUserDO;
+import io.exhub.exhub_manager.pojo.DTO.RoleModuleDTO;
 import org.springframework.ui.ModelMap;
 
 import javax.servlet.http.HttpSession;
@@ -50,10 +50,10 @@ public interface IBackstageService {
 
     /**
      * 获取角色模块列表
-     * @param managerUser
+     * @param roleId
      * @param modelMap
      */
-    void getModulesMap(ManagerUserDO managerUser, ModelMap modelMap);
+    void getModulesMap(Long roleId, ModelMap modelMap);
 
     /**
      * 获取账号列表
@@ -89,4 +89,25 @@ public interface IBackstageService {
      * @return
      */
     ServerResponse putAccountPassword(ManagerUserDO managerUser, String password, String resetPassword);
+
+    /**
+     * 删除角色
+     * @param id
+     * @return
+     */
+    boolean deleteRoleById(Long id);
+
+    /**
+     * 角色模块绑定页
+     * @param roleId
+     * @param modelMap
+     */
+    void getBackstageRoleModule(Long roleId, ModelMap modelMap);
+
+    /**
+     * 更新/添加角色及其对应的模块
+     * @param roleModuleDTO
+     * @return
+     */
+    ServerResponse postRoleModule(RoleModuleDTO roleModuleDTO);
 }
