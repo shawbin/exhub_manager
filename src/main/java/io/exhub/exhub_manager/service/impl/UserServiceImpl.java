@@ -95,7 +95,8 @@ public class UserServiceImpl implements IUserService{
                 //查询审核成功的人数
                 long count = countByExample(IdentityAuthenticationDO.ADUIT_PASS);
                 if (count <= peopleCount) {
-                    updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint + extraPoint);
+                    //插入额外奖励
+                    insertPoint(extraPoint, userDO.getUsername(), userDO.getUsername(), PointRecordDO.AUTH);
                 }
                 //异步发送审核成功邮箱
                 iMailService.identityAuthSuccess(userDO.getUsername());
@@ -206,6 +207,23 @@ public class UserServiceImpl implements IUserService{
             pointMapper.updateByPrimaryKeySelective(recordDO);
         }
 
+    }
+
+    /**
+     * 插入额外奖励
+     * @param extraPoint
+     * @param referrer
+     * @param referral
+     * @param type
+     */
+    public void insertPoint(Long extraPoint, String referrer, String referral, Byte type) {
+
+        PointRecordDO point = new PointRecordDO();
+        point.setPoint(extraPoint);
+        point.setReferrer(referrer);
+        point.setReferral(referral);
+        point.setType(type);
+        pointMapper.insertSelective(point);
     }
 
 
