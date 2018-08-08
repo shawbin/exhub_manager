@@ -296,11 +296,14 @@ public class BackstageServiceImpl implements IBackstageService {
             roleDO.setRoleName(roleModuleDTO.getRoleName());
             roleMapper.insertSelective(roleDO);
             //批量插入角色绑定模块
-
+            roleMapper.batchInsertRoleModule(roleDO.getId(), roleModuleDTO.getIds());
         }else {
-            //修改角色
+            //删除原先的角色对应的模块
+            roleMapper.deleteModulesByRoleId(roleModuleDTO.getRoleId());
+            //插入重新绑定的角色
+            roleMapper.batchInsertRoleModule(roleModuleDTO.getRoleId(), roleModuleDTO.getIds());
         }
-        return null;
+        return ServerResponse.createBySuccess();
     }
 
 }

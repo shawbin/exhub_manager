@@ -187,7 +187,7 @@ public class BackstageController {
      * @return
      */
     @ResponseBody
-    @PostMapping(value = "role/module")
+    @PostMapping(value = "role/module", produces = MediaType.APPLICATION_JSON_VALUE)
     public ServerResponse postRoleModule(@RequestBody RoleModuleDTO roleModuleDTO) {
 
         return iBackstageService.postRoleModule(roleModuleDTO);

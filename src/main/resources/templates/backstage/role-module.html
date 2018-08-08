@@ -17,7 +17,7 @@
                     <input type="text" name="roleName" lay-verify="required" th:value="${roleName}"
                            placeholder="请输入角色名" autocomplete="off"
                            class="layui-input">
-                    <input type="hidden" name="id" th:value="${roleId}" autocomplete="off" class="layui-input">
+                    <input type="hidden" name="roleId" th:value="${roleId}" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item" id="checkModule">
@@ -104,10 +104,10 @@
         //监听提交
         form.on('submit(formSubmit)', function (data) {
             show();
-            data.field.module = charModules;
+            data.field.ids = charModules;
             layer.msg(JSON.stringify(data.field));
-            /*$.ajax({
-                url: '/backstage/assigned/account/' + data.field.role,
+            $.ajax({
+                url: '/backstage/role/module',
                 type: 'post',
                 data: JSON.stringify(data.field),
                 contentType: 'application/json',
@@ -115,12 +115,12 @@
                     if (res.status == 200) {
                         layer.msg('操作成功')
                     }
-                    window.location.href = "/backstage/account.html";
+                    window.location.href = "/backstage/role.html";
                 },
                 error: function () {
                     layer.msg('系统错误')
                 }
-            });*/
+            });
             return false;
         });
     });

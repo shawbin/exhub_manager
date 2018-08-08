@@ -289,4 +289,18 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!-- 批量插入角色绑定模块 -->
+  <insert id="batchInsertRoleModule">
+    insert into t_role_module (role_id, module_id)
+    values
+    <foreach collection="ids" item="moduleId" separator=",">
+      (#{roleId}, #{moduleId})
+    </foreach>
+  </insert>
+  <!-- 删除该角色对应的所有模块 -->
+  <delete id="deleteModulesByRoleId">
+    delete from t_role_module
+    where
+    role_id = #{roleId}
+  </delete>
 </mapper>
