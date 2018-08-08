@@ -90,19 +90,13 @@ public class UserServiceImpl implements IUserService{
             identityMapper.updateByPrimaryKeySelective(identity);
             //获取用户信息
             UserDO userDO = userMapper.selectByPrimaryKey(identityDO.getUserId());
-            //身份审核成功 加积分
+            //身份审核成功 10000 前一万人额外奖励 500
             if (status.equals(IdentityAuthenticationDO.ADUIT_PASS)) {
-                //更新注册积分记录
-                //10000 前一万人额外奖励 500
                 //查询审核成功的人数
                 long count = countByExample(IdentityAuthenticationDO.ADUIT_PASS);
-                if (count > peopleCount) {
-                    updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint);
-                }else {
+                if (count <= peopleCount) {
                     updatePoint(identityDO.getUserId(), PointRecordDO.REGIST, registerPoint + extraPoint);
                 }
-                //更新被推荐记录
-                updatePoint(identityDO.getUserId(), PointRecordDO.REFFER, referrerPoint);
                 //异步发送审核成功邮箱
                 iMailService.identityAuthSuccess(userDO.getUsername());
             }else {
