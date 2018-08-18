@@ -50,6 +50,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
 		registry.viewResolver(getViewResolver());
 	}
+
 	@Override
 	public void configurePathMatch(PathMatchConfigurer configurer) {
 		configurer.setUseRegisteredSuffixPatternMatch(false);
@@ -58,11 +59,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 
-		//registry.addViewController("/error").setViewName("");
-		//registry.addViewController("/index").setViewName("index");
 		//registry.addViewController("/login").setViewName("login");
 
 	}
-
-
 }

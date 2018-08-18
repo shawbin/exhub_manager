@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-body">
+        <!-- 提交表单 -->
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="roleName" lay-verify="required" th:value="${roleName}"
+                           placeholder="请输入角色名" autocomplete="off"
+                           class="layui-input">
+                    <input type="hidden" name="roleId" th:value="${roleId}" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" id="checkModule">
+                <label class="layui-form-label">模块</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="module" value="1" title="交易管理">
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="module" value="12" title="基础币种管理">
+                        <input type="checkbox" name="module" value="13" title="币种对管理">
+                        <input type="checkbox" name="module" value="14" title="币种管理">
+                        <input type="checkbox" name="module" value="15" title="规则参数管理">
+                    </div>
+                </div>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="module" value="2" title="用户管理">
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="module" value="5" title="身份认证审核">
+                        <input type="checkbox" name="module" value="8" title="Bilala用户管理">
+                        <input type="checkbox" name="module" value="10" title="大额提币审核">
+                    </div>
+                </div>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="module" value="3" title="内容管理">
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="module" value="16" title="帮助管理">
+                        <input type="checkbox" name="module" value="17" title="意见反馈">
+                        <input type="checkbox" name="module" value="18" title="更新版本">
+                        <input type="checkbox" name="module" value="19" title="banner管理">
+                        <input type="checkbox" name="module" value="20" title="公告管理">
+                    </div>
+                </div>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="module" value="4" title="后台管理">
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="module" value="6" title="账号管理">
+                        <input type="checkbox" name="module" value="7" title="密码管理">
+                        <input type="checkbox" name="module" value="9" title="角色管理">
+                    </div>
+                </div>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="module" value="11" title="数据统计">
+                    <div class="layui-input-block">
+                    </div>
+                </div>
+                <!--<div class="layui-DTO-block" th:each="moduleList : ${moduleList}" lay-filter="test">
+                    <DTO type="checkbox" name="module" th:value="${moduleList.parent.id}"
+                           th:title="${moduleList.parent.moduleName}">
+                    <div class="layui-DTO-block" th:each="childModules : ${moduleList.modules}">
+                        <DTO type="checkbox" th:value="${childModules.id}" th:title="${childModules.moduleName}">
+                    </div>
+                </div>-->
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <a href="javascript:history.go(-1);" class="layui-btn">后退</a>
+                    <button class="layui-btn" lay-submit lay-filter="formSubmit">确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+    ids = [[${ids}]];
+    (function () {
+        var obj = document.getElementsByName("module");
+        for (var k in obj) {
+            for (var z in ids) {
+                if (obj[k].value == ids[z]) {
+                    obj[k].setAttribute("checked", '');
+                }
+            }
+        }
+    })();
+</script>
+<script src="../../static/layui/layui.js"></script>
+<script>
+    var charModules = [];
+    var ids = [];
+    //列表
+    layui.use(['element', 'form', 'jquery'], function () {
+        var element = layui.element,
+            form = layui.form,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            show();
+            data.field.ids = charModules;
+            layer.msg(JSON.stringify(data.field));
+            $.ajax({
+                url: '/backstage/role/module',
+                type: 'post',
+                data: JSON.stringify(data.field),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.status == 200) {
+                        layer.msg('操作成功')
+                    }
+                    window.location.href = "/backstage/role.html";
+                },
+                error: function () {
+                    layer.msg('系统错误')
+                }
+            });
+            return false;
+        });
+    });
+
+    //复选框
+    function show() {
+        var obj = document.getElementsByName("module");
+        charModules = [];
+        for (var k in obj) {
+            if (obj[k].checked)
+                charModules.push(obj[k].value);
+        }
+    }
+</script>
+</body>
+</html>

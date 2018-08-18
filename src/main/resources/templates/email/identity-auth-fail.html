@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style type="text/css">
+        .mail-format .container-email {
+            position: relative;
+            padding: 44px 44px 35px 44px;
+            width: 542px;
+            color: #333
+        }
+
+        .mail-format .container-email2 {
+            padding-bottom: 10px
+        }
+
+        .mail-format .fc-3083ee, .mail-format a {
+            color: #3083ee
+        }
+
+        .mail-format .header {
+            padding-bottom: 16px
+        }
+
+        .mail-format .header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 52px
+        }
+
+        .mail-format .body p {
+            font-size: 16px;
+            line-height: 26px
+        }
+
+        .mail-format .btn-box {
+            text-align: center;
+            padding: 52px 0 42px 0;
+            margin-bottom: 18px;
+            border-bottom: 4px solid #e1f3ff
+        }
+
+        .mail-format .link-btn {
+            padding: 0 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 16px;
+            color: #FFF;
+            text-transform: uppercase;
+            border-radius: 4px;
+            background: #33abfd;
+            display: inline-block
+        }
+
+        .mail-format .footer {
+            background: #FFF
+        }
+
+        .mail-format .footer p {
+            font-size: 16px;
+            color: #acacac;
+            line-height: 1.7
+        }
+
+        .mail-format .footer p.tips-p {
+            font-size: 14px;
+            color: #afafaf;
+            text-align: center;
+            line-height: 24px;
+            padding-top: 40px
+        }
+    </style>
+</head>
+
+<div class="mail-format fn-clear">
+    <div class="container-email">
+        <div class="header">
+            <h3>【Bilala】您的身份认证未通过审核</h3>
+        </div>
+        <div class="body">
+            <p>尊敬的用户 <span th:text="${username}"></span>：</p>
+            <p>
+                您好，抱歉，您的身份认证未通过审核，请您登录<a href="https://www.bilala.io">Bilala官网</a>查看原因，您可修改信息或更新图片，重新提交认证申请，我们会尽快处理。
+            </p>
+        </div>
+    </div>
+</div>
+</html>
+

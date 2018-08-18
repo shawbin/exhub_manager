@@ -4,53 +4,72 @@
     <meta charset="UTF-8">
     <title>exhub manager login</title>
     <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <style>
+        .login{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;width:290px;height:200px;padding:24px 50px 45px 50px;background:#FFF;border-radius:5px}
+        .layui-form-label{width:50px}
+        .layui-input-block{margin-left:0}
+        .layui-form-item{margin-bottom:20px}
+        .layui-btn{width:150px;font-size:15px;border-bottom:3px solid #1881cf}
+        .logo-box{text-align:center;margin-bottom:10px}
+    </style>
 </head>
-<body>
+<body style="background: #111222;">
 
-<form class="layui-form layui-main" action="">
-    <div class="layui-form-item">
-        <label class="layui-form-label">用户名：</label>
-        <div class="layui-input-block">
-            <input type="text" name="username" required lay-verify="required" placeholder="请输入用户名" autocomplete="off"
-                   class="layui-input">
+<div id="particles-js"></div>
+<div class="login">
+    <form class="layui-form" action="">
+        <div class="layui-input-block logo-box">
+            <img src="../static/images/bilala.png">
         </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">密码：</label>
-        <div class="layui-input-block">
-            <input type="password" name="password" required lay-verify="required" placeholder="请输入密码"
-                   autocomplete="off" class="layui-input">
+        <div class="layui-form-item">
+            <!--<label class="layui-form-label">用户名</label>-->
+            <div class="layui-input-block">
+                <input type="text" name="username" required lay-verify="required" placeholder="用户名" autocomplete="off" class="layui-input">
+            </div>
         </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="login">立即提交</button>
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        <div class="layui-form-item">
+            <!--<label class="layui-form-label">密码</label>-->
+            <div class="layui-input-block">
+                <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+            </div>
         </div>
-    </div>
-</form>
-
-</body>
+        <div class="layui-form-item" style="text-align: center;padding-top: 10px">
+            <button lay-submit lay-filter="login" class="layui-btn layui-btn-normal">登&nbsp;录</button>
+        </div>
+    </form>
+</div>
 <script src="../static/layui/layui.js"></script>
+<script src="../static/layui/js/particles.js"></script>
+<script>
+    particlesJS.load('particles-js', '../static/layui/js/particles.json', function() {});
+</script>
 <script>
     // 登录提交
     layui.use(['form', 'jquery'], function () {
         var form = layui.form,
-            jquery = layui.jquery;
+            $ = layui.$;
 
-        
         //监听提交
         form.on('submit(login)', function (data) {
-            layer.msg(JSON.stringify(data.field));
-            jquery.ajax({
-                url: 'http://localhost/manager/user/1022/login/record?pageNum=1&pageSize=10',
-                type: 'get',
+            $.ajax({
+                url: '/backstage/user/login',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(data.field),
                 success: function (res) {
-                    layer.msg(JSON.stringify(res))
+                    if (res.status == 200) {
+                        window.location.href = '/index.html';
+                    }else {
+                        layer.msg(res.msg);
+                    }
+                },
+                error: function () {
+                    layer.msg("系统错误")
                 }
             });
             return false;
         });
     });
 </script>
+</body>
 </html>

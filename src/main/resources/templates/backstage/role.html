@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-body">
+        <!-- 数据表格 -->
+        <button class="layui-btn layui-btn-normal" onclick="insertRole()">新增角色</button>
+        <table class="layui-table" lay-filter="roleTable">
+            <thead>
+            <tr>
+                <th lay-data="{field:'id', width:100, fixed: 'left'}">ID</th>
+                <th lay-data="{field:'roleName', width:100}">用户名</th>
+                <th lay-data="{width:300, align:'center', toolbar: '#barOperate', align:'center', fixed: 'right'}">操作</th>
+            </tr>
+            </thead>
+        </table>
+
+        <script type="text/html" id="barOperate">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script src="../../static/js/common.js"></script>
+<script>
+    //列表
+    layui.use(['element', 'table'], function () {
+        var element = layui.element;//元素操作
+    });
+    (function () {
+        //加载列表的后端 url
+        var getListUrl = '/backstage/role/list';
+        var tableOptions = {
+            width: 550,
+            height: 500,
+            url: getListUrl, //请求地址
+            method: 'GET', //方式
+            id: 'accountList', //生成 Layui table 的标识 id，必须提供，用于后文刷新操作，笔者该处出过问题
+            page: true, //是否分页
+            response: { //定义后端 json 格式，详细参见官方文档
+                statusName: 'code', //状态字段名称
+                statusCode: '0', //状态字段成功值
+                msgName: 'msg', //消息字段
+                countName: 'count', //总数字段
+                dataName: 'data' //数据字段
+            }
+        };
+        layui.use(['table', 'layer', 'jquery'], function () {//layui 模块引用，根据需要自行修改
+            var layer = layui.layer,
+                table = layui.table,
+                $ = layui.$;
+            //表初始化
+            var createTable = function () {
+                table.init('roleTable', tableOptions);
+            };
+            //监听工具条
+            table.on('tool(roleTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                var data = obj.data //获得当前行数据
+                    ,layEvent = obj.event; //获得 lay-event 对应的值
+                if(layEvent === 'del'){
+                    layer.confirm('真的删除行么', function(index){
+                        obj.del(); //删除对应行（tr）的DOM结构
+                        layer.close(index);
+                        //向服务端发送删除指令
+                        layer.msg('ID：' + data.id + ' 的删除操作');
+                        $.ajax({
+                            url: '/backstage/role/' + data.id,
+                            type: 'delete',
+                            success: function (res) {
+                                if (res.status == 200) {
+                                    layer.msg('操作成功')
+                                }else {
+                                    layer.msg(res.msg)
+                                }
+                            },
+                            error: function () {
+                                layer.msg('系统错误')
+                            }
+                        })
+                    });
+                } else if(layEvent === 'edit'){
+                    layer.msg('ID：' + data.id + ' 的编辑操作');
+                    window.location.href = "/backstage/role-module.html?roleId=" + data.id;
+                }
+            });
+            //表初始化
+            createTable();
+        });
+    })();
+    function insertRole() {
+        window.location.href = '/backstage/role-module.html';
+    }
+
+</script>
+</body>
+</html>

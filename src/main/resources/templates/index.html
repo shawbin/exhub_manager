@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin" th:fragment="index">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="../static/images/admin.jpg" class="layui-nav-img">
+                    <span th:text="${roleName}"></span>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="/backstage/user/logout">退了</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" th:each="moduleList : ${moduleList}" lay-filter="test">
+                <li class="layui-nav-item">
+                    <a href="javascript:;" th:text="${moduleList.parent.moduleName}"></a>
+                    <dl class="layui-nav-child" th:each="childModules : ${moduleList.modules}">
+                        <dd><a href="javascript:;" class="a-url" th:name="${childModules.moduleUrl}" th:text="${childModules.moduleName}"></a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab" lay-filter="demo" lay-allowClose="true">
+
+            <ul class="layui-tab-title"></ul>
+            <div class="layui-tab-content">
+                <iframe src="" frameborder="0" width="1500" height="1000" class="layui-iframe"></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © exhub.io
+    </div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+
+</script>
+<script src="../../static/layui/layui.js"></script>
+<script>
+    //列表
+    layui.use(['element'], function () {
+        var element = layui.element;
+    });
+    layui.use('jquery', function () {
+        var $ = layui.$;
+        $('.a-url').click(function () {
+            var url = $(this).attr('name');
+            $('.layui-iframe').attr("src", url);
+        })
+    });
+</script>
+</body>
+</html>

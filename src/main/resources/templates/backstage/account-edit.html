@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-body">
+        <!-- 提交表单 -->
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" lay-verify="required" th:value="${username}" placeholder="请输入用户名" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="password" lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">角色</label>
+                    <div class="layui-input-block">
+                        <select name="role">
+                            <option  th:each="roles:${roleList}" th:value="${roles.id}" th:text="${roles.roleName}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <a href="javascript:history.go(-1);" class="layui-btn">后退</a>
+                    <button class="layui-btn" lay-submit lay-filter="formSubmit">确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script>
+    //列表
+    layui.use(['element', 'form', 'jquery'], function () {
+        var element = layui.element,
+            form = layui.form,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(formSubmit)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            $.ajax({
+                url: '/backstage/assigned/account/' + data.field.role,
+                type: 'post',
+                data: JSON.stringify(data.field),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (res.status == 200) {
+                        layer.msg('操作成功')
+                    }
+                    window.location.href = "/backstage/account.html";
+                },
+                error: function () {
+                    layer.msg('系统错误')
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

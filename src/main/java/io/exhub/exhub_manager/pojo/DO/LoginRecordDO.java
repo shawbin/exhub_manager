@@ -2,6 +2,11 @@ package io.exhub.exhub_manager.pojo.DO;
 
 import java.util.Date;
 
+/**
+ * 交易中心登录记录
+ * @date 2018/7/26
+ * @author
+ */
 public class LoginRecordDO {
     /**
      *

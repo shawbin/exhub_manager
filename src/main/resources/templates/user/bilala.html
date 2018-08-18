@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-body">
+        <!-- 提交表单 -->
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="userId" placeholder="请输入用户ID" autocomplete="off" class="layui-input">
+                </div>
+                <label class="layui-form-label">用户邮箱</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" placeholder="请输入用户邮箱" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <input type="text" class="layui-input" name="startTime" id="startTime">
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <input type="text" class="layui-input" name="endTime" id="endTime">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">搜索</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+        <!-- 数据表格 -->
+        <table class="layui-table" lay-filter="bilalaList">
+            <thead>
+            <tr>
+                <th lay-data="{field:'userId', width:100, fixed: 'left'}">用户ID</th>
+                <th lay-data="{field:'username', width:200}">用户邮箱</th>
+                <th lay-data="{field:'createTime', width:200, templet: '#createTimeTem'}">注册时间</th>
+                <th lay-data="{field:'googleValidateCodeFlag', width:90, templet: '#googleStatusTem'}">谷歌认证</th>
+                <th lay-data="{field:'status', width:90, templet: '#statusTem'}">状态</th>
+                <th lay-data="{width:600, align:'center', toolbar: '#barDemo', align:'center', fixed: 'right'}">操作</th>
+            </tr>
+            </thead>
+        </table>
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="accountBill">查看用户账单</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="capitalDetail">查看资金详情</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="loginRecord">查看登录历史</a>
+            <a class="layui-btn layui-btn-xs" lay-event="modifyAmount">修改提现额度</a>
+            {{#  if(d.googleValidateCodeFlag == true){ }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="modifyGoogleFalse">关闭谷歌认证</a>
+            {{#  } else { }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="modifyGoogleTrue">关闭谷歌认证</a>
+            {{#  } }}
+            {{#  if(d.status == true){ }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="modifyAccountFalse">账号冻结</a>
+            {{#  } else { }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="modifyAccountTrue">账号解冻</a>
+            {{#  } }}
+        </script>
+        <script type="text/html" id="createTimeTem">
+            {{d.createTime}}
+            {{#
+            var date = new Date();
+            date.setTime(d.createTime);
+            return date.format("yyyy-MM-dd hh:mm:ss");
+            }}
+        </script>
+        <script type="text/html" id="googleStatusTem">
+            {{#  if(d.googleValidateCodeFlag == true){ }}
+            已开启
+            {{#  } else { }}
+            未开启
+            {{#  } }}
+        </script>
+        <script type="text/html" id="statusTem">
+            {{#  if(d.status == true){ }}
+            正常
+            {{#  } else { }}
+            冻结
+            {{#  } }}
+        </script>
+    </div>
+</div>
+<script src="../../static/layui/layui.js"></script>
+<script src="../../static/js/common.js"></script>
+<script>
+    //列表
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    //时间
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startTime',
+            value: new Date().monthStartFormat("yyyy-MM-dd")
+        });
+        laydate.render({
+            elem: '#endTime',
+            value: new Date().format("yyyy-MM-dd")
+        });
+    });
+    //表单提交
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field))
+            initTable(data.field)
+            return false;
+        });
+    });
+    (function () {
+        var data = {
+            userId: '',
+            username: '',
+            startTime: new Date().monthStartFormat("yyyy-MM-dd"),
+            endTime: new Date().format("yyyy-MM-dd")
+        }
+        initTable(data)
+    })();
+
+    function initTable(data) {
+        //加载列表的后端 url
+        var getListUrl = '/user/list';
+        var tableOptions = {
+            width: 1300,
+            height: 500,
+            url: getListUrl, //请求地址
+            method: 'POST', //方式
+            contentType: 'application/json',
+            where: data,
+            id: 'listReload', //生成 Layui table 的标识 id，必须提供，用于后文刷新操作，笔者该处出过问题
+            page: true, //是否分页
+            response: { //定义后端 json 格式，详细参见官方文档
+                statusName: 'code', //状态字段名称
+                statusCode: '0', //状态字段成功值
+                msgName: 'msg', //消息字段
+                countName: 'count', //总数字段
+                dataName: 'data' //数据字段
+            }
+        };
+        layui.use(['table', 'layer', 'jquery'], function () {//layui 模块引用，根据需要自行修改
+            var layer = layui.layer, table = layui.table, $ = layui.$;
+            //表初始化
+            var createTable = function () {
+                table.init('bilalaList', tableOptions);
+            };
+            //监听工具条
+            table.on('tool(bilalaList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                var data = obj.data //获得当前行数据
+                    , layEvent = obj.event; //获得 lay-event 对应的值
+                if (layEvent === 'loginRecord') {
+                    window.location.href = "/user/login-record.html?userId=" + data.userId;
+                } else if (layEvent === 'modifyGoogleFalse') {
+                    layer.confirm('真的关闭google验证么', function () {
+                        $.ajax({
+                            url: '/user/google/auth/' + data.userId + '/' + false,
+                            type: 'PUT',
+                            success: function (res) {
+                                if (res.status == 200) {
+                                    layer.msg('操作成功')
+                                    window.location.href = "/user/bilala.html";
+                                } else {
+                                    layer.msg(res.msg)
+                                }
+                            },
+                            error: function () {
+                                layer.msg('系统错误')
+                            }
+                        });
+                    });
+                } else if (layEvent === 'modifyGoogleTrue') {
+                    layer.msg("对不起，该用户未绑定")
+                } else if (layEvent === 'modifyAccountFalse') {
+                    layer.confirm('真的冻结账户么', function () {
+                        modifyAccount(data.userId, false);
+                    });
+                } else if (layEvent === 'modifyAccountTrue') {
+                    layer.confirm('真的解冻账户么', function () {
+                        modifyAccount(data.userId, true);
+                    });
+                }
+            });
+            //表初始化
+            createTable();
+        });
+    }
+
+    //关闭/开启google验证
+    function modifyAccount(userId, status) {
+        layui.use('jquery', function () {
+            var $ = layui.$;
+            $.ajax({
+                url: '/user/account/' + userId + '/' + status,
+                type: 'PUT',
+                success: function (res) {
+                    if (res.status == 200) {
+                        layer.msg('操作成功')
+                        window.location.href = "/user/bilala.html";
+                    } else {
+                        layer.msg(res.msg)
+                    }
+                },
+                error: function () {
+                    layer.msg('系统错误')
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
